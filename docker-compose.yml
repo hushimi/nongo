@@ -1,0 +1,39 @@
+services:
+  nongodb:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: secret
+      TZ: "Asia/Tokyo"
+    ports:
+      - 3306:3306
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - nongodb_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  phpmyadmin:
+    depends_on:
+      - nongodb
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: nongodb
+      PMA_USER: admin
+      PMA_PASSWORD: secret
+      MEMORY_LIMIT: 256M
+      UPLOAD_LIMIT: 128M
+    volumes:
+      - phpmyadmin_session_laravel:/sessions
+
+networks:
+  nongo-net:
+
+volumes:
+  nongodb_data:
+  phpmyadmin_session_laravel:
