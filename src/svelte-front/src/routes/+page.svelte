@@ -46,7 +46,7 @@
     onMount(fetchTodos);
 </script>
 
-<h1 class="ms-3 text-blue-600">Todo List</h1>
+<h1 class="ms-3 text-blue-600">tintin List</h1>
 <input bind:value={newTask} placeholder="New task" class="ms-3" />
 <button on:click={addTodo} class="ms-3">Add</button>
 
