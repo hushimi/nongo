@@ -70,3 +70,7 @@ yarn-error.log*
 # ==================================
 .DS_Store
 Thumbs.db
+
+# Ignore Vite/SvelteKit build output
+/src/main/resources/static/_app/
+/src/main/resources/static/index.html
