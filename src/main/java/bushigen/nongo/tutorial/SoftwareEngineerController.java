@@ -20,11 +20,35 @@ public class SoftwareEngineerController {
         this.softwareEngineerService = softwareEngineerService;
     }
 
+    /**
+     * Retrieves a list of all software engineers.
+     *
+     * @return a list of SoftwareEngineer objects
+     */
     @GetMapping
     public List<SoftwareEngineer> getEngineers() {
         return softwareEngineerService.getAllSoftwareEngineers();
     }
 
+    /**
+     * Adds a new software engineer to the system.
+     *
+     * @param softwareEngineer the SoftwareEngineer object to add (from request body)
+     */
+    @PostMapping
+    public void addNewSoftwareEngineer(
+        @RequestBody SoftwareEngineer softwareEngineer
+    )
+    {
+        softwareEngineerService.insertSoftwareEngineer(softwareEngineer);
+    }
+
+    /**
+     * Retrieves a software engineer by their unique ID.
+     *
+     * @param id the ID of the software engineer to retrieve
+     * @return the SoftwareEngineer object with the specified ID
+     */
     @GetMapping("{id}")
     public SoftwareEngineer getEngineersById(
         @PathVariable Long id
@@ -33,11 +57,4 @@ public class SoftwareEngineerController {
         return softwareEngineerService.getSoftwareEngineerById(id);
     }
 
-    @PostMapping
-    public void addNewSoftwareEngineer(
-        @RequestBody SoftwareEngineer softwareEngineer
-    )
-    {
-        softwareEngineerService.insertSoftwareEngineer(softwareEngineer);
-    }
 }
