@@ -57,4 +57,13 @@ public class SoftwareEngineerController {
         return softwareEngineerService.getSoftwareEngineerById(id);
     }
 
+    /**
+     * Deletes a software engineer by their unique ID (POST request, id in body).
+     *
+     * @param id the ID of the software engineer to delete (from request body)
+     */
+    @PostMapping("/delete")
+    public void deleteSoftwareEngineerById(@RequestBody Long id) {
+        softwareEngineerService.deleteSoftwareEngineerById(id);
+    }
 }

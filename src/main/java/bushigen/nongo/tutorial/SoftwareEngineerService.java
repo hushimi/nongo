@@ -31,4 +31,7 @@ public class SoftwareEngineerService {
         softwareEngineerRepository.save(softwareEngineer);
     }
 
+    public void deleteSoftwareEngineerById(Long id) {
+        softwareEngineerRepository.deleteById(id);
+    }
 }

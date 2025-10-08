@@ -6,15 +6,29 @@
     import { faEdit } from "@fortawesome/free-regular-svg-icons";
 
     type Se = {
+        id: number;
         name: string;
         techStack: string;
     }
-
     let engineers: Se[] = [];
+
     async function fetchData(): Promise<void> {
         const res = await fetch('/api/software-engineers');
         const data: Se[] = await res.json();
         engineers = data;
+    }
+
+    async function deleteEngineer(id: number): Promise<void> {
+        const res: Response = await fetch(`/api/software-engineers/delete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(id)
+        });
+        if (res.ok) {
+            await fetchData();
+        } else {
+            alert('Failed to delete engineer.');
+        }
     }
 
     onMount(fetchData);
@@ -67,7 +81,9 @@
                         <Fa icon={faEdit} color="#00cc00" size="sm" class="block mx-auto cursor-pointer" />
                     </td>
                     <td class="px-6 py-4 text-center">
-                        <Fa icon={faTrash} color="#00cc00" size="sm" class="block mx-auto cursor-pointer" />
+                        <button class="block mx-auto cursor-pointer" on:click={() => deleteEngineer(engineer.id)}>
+                            <Fa icon={faTrash} color="#00cc00" size="sm" />
+                        </button>
                     </td>
                 </tr>
             {/each}

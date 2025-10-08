@@ -7,8 +7,7 @@
     let error: string = '';
 
     /**
-     * Retrieves a list of all software engineers.
-     *
+     * create new record
      */
     async function createEngineer(): Promise<void> {
         error = '';
@@ -37,7 +36,7 @@
 <a href="/software-engineer" class="block mb-4 text-blue-600 hover:underline">← Back to list</a>
 
 <div class="max-w-md mx-auto bg-white p-8 rounded shadow">
-    <h2 class="text-2xl font-bold mb-4">Create Software Engineer</h2>
+    <h2 class="text-2xl font-bold mb-4 text-center">Create Software Engineer</h2>
     {#if error}
         <div class="mb-2 text-red-600">{error}</div>
     {/if}
@@ -45,11 +44,11 @@
     <form on:submit|preventDefault={createEngineer}>
         <div class="mb-4">
             <label class="block mb-1 font-semibold" for="name">Name</label>
-            <input class="w-full border rounded px-3 py-2" bind:value={name} placeholder="Name" id="name" />
+            <input class="w-full border rounded px-3 py-2" bind:value={name} id="name" autocomplete="off" />
         </div>
         <div class="mb-4">
             <label class="block mb-1 font-semibold" for="techStack">Tech Stack</label>
-            <input class="w-full border rounded px-3 py-2" bind:value={techStack} placeholder="Tech Stack" id="techStack" />
+            <input class="w-full border rounded px-3 py-2" bind:value={techStack} id="techStack" autocomplete="off" />
         </div>
         <button type="submit" class="btn btn-primary w-full">Create</button>
     </form>
