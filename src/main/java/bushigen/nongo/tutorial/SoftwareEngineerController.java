@@ -21,9 +21,7 @@ public class SoftwareEngineerController {
     }
 
     /**
-     * Retrieves a list of all software engineers.
-     *
-     * @return a list of SoftwareEngineer objects
+     * SoftwareEngineerの配列を返す
      */
     @GetMapping
     public List<SoftwareEngineer> getEngineers() {
@@ -31,9 +29,8 @@ public class SoftwareEngineerController {
     }
 
     /**
-     * Adds a new software engineer to the system.
-     *
-     * @param softwareEngineer the SoftwareEngineer object to add (from request body)
+     * 新規でSoftwareEngineerを追加
+     * @param softwareEngineer
      */
     @PostMapping
     public void addNewSoftwareEngineer(
@@ -44,10 +41,10 @@ public class SoftwareEngineerController {
     }
 
     /**
-     * Retrieves a software engineer by their unique ID.
+     * ID指定でEngineer情報取得
      *
-     * @param id the ID of the software engineer to retrieve
-     * @return the SoftwareEngineer object with the specified ID
+     * @param id
+     * @return
      */
     @GetMapping("{id}")
     public SoftwareEngineer getEngineersById(
@@ -58,12 +55,21 @@ public class SoftwareEngineerController {
     }
 
     /**
-     * Deletes a software engineer by their unique ID (POST request, id in body).
+     * ID指定でSoftwareEngineerを削除
      *
-     * @param id the ID of the software engineer to delete (from request body)
+     * @param id
      */
     @PostMapping("/delete")
     public void deleteSoftwareEngineerById(@RequestBody Long id) {
         softwareEngineerService.deleteSoftwareEngineerById(id);
+    }
+
+    /**
+     * ID指定でSoftwareEngineerを編集
+     * @param softwareEngineer 編集するエンジニア（ID含む）
+     */
+    @PostMapping("/edit")
+    public void editSoftwareEngineer(@RequestBody SoftwareEngineer softwareEngineer) {
+        softwareEngineerService.updateSoftwareEngineer(softwareEngineer);
     }
 }

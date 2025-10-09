@@ -1,34 +1,30 @@
-<!-- todo 編集と削除の機能 -->
 <script lang="ts">
     import { onMount } from "svelte";
+    import { goto } from '$app/navigation';
+    import type { SoftwareEngineer } from "$lib/types/software-engineer";
+    import { getRequest, postRequest } from "$lib/util/api";
     import Fa from "svelte-fa";
     import { faTrash } from "@fortawesome/free-solid-svg-icons";
     import { faEdit } from "@fortawesome/free-regular-svg-icons";
 
-    type Se = {
-        id: number;
-        name: string;
-        techStack: string;
-    }
-    let engineers: Se[] = [];
+    let engineers: SoftwareEngineer[] = [];
 
-    async function fetchData(): Promise<void> {
-        const res = await fetch('/api/software-engineers');
-        const data: Se[] = await res.json();
-        engineers = data;
+    function fetchData(): void {
+        getRequest<SoftwareEngineer[]>(
+            '/api/software-engineers',
+            undefined,
+            (data) => { engineers = data; },
+            (err) => { console.log(err) }
+        );
     }
 
-    async function deleteEngineer(id: number): Promise<void> {
-        const res: Response = await fetch(`/api/software-engineers/delete`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(id)
-        });
-        if (res.ok) {
-            await fetchData();
-        } else {
-            alert('Failed to delete engineer.');
-        }
+    function deleteEngineer(id: number): void {
+        postRequest(
+            '/api/software-engineers/delete',
+            id,
+            () => { fetchData(); },
+            (err) => { console.log(err); }
+        );
     }
 
     onMount(fetchData);
@@ -41,13 +37,10 @@
     nongo
 </a>
 <div class="container mx-auto">
-    <h1 class="text-neutral-800 text-center font-bold mb-5">Engineers</h1>
+    <h1 class="text-center font-bold mb-5">Engineers</h1>
 
     <div class="w-3/5 mx-auto text-end mb-5">
-        <a
-            href="/software-engineer/create"
-            class="btn btn-primary"
-        >
+        <a href="/software-engineer/create" class="btn btn-primary">
             create
         </a>
     </div>
@@ -77,8 +70,10 @@
                     <td class="px-6 py-4">
                         {engineer.techStack}
                     </td>
-                    <td class="px-6 py-4">
-                        <Fa icon={faEdit} color="#00cc00" size="sm" class="block mx-auto cursor-pointer" />
+                    <td class="px-6 py-4 text-center">
+                        <button class="block mx-auto cursor-pointer" on:click={() => goto(`/software-engineer/${engineer.id}`)}>
+                            <Fa icon={faEdit} color="#00cc00" size="sm" />
+                        </button>
                     </td>
                     <td class="px-6 py-4 text-center">
                         <button class="block mx-auto cursor-pointer" on:click={() => deleteEngineer(engineer.id)}>
