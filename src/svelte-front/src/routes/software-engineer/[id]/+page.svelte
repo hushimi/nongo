@@ -1,14 +1,18 @@
 <script lang="ts">
+    import type { SoftwareEngineer, SoftwareEngineerRegist } from '$lib/types/software-engineer';
+    import SoftwareEngineerForm from '$lib/components/SoftwareEngineerForm.svelte';
+    const { data } = $props();
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
-    import SoftwareEngineerForm from '$lib/components/SoftwareEngineerForm.svelte';
     import { getRequest, postRequest } from '$lib/util/api';
-    import type { SoftwareEngineer, SoftwareEngineerRegist } from '$lib/types/software-engineer';
-    const { data } = $props();
 
+    // URLからID取得
     const tgtId = data.id;
     let engineer = $state<SoftwareEngineer | undefined>(undefined);
 
+    /**
+     * GET: エンジニア情報単体取得
+     */
     function getEngineer(): void {
         getRequest<SoftwareEngineer>(
             `/api/software-engineers/${tgtId}`,
@@ -18,6 +22,9 @@
         );
     }
 
+    /**
+     * Form入力内容を取得してデータ更新
+     */
     async function handleEdit(param: SoftwareEngineer | SoftwareEngineerRegist): Promise<void> {
         const payload = 'id' in param ? param : { ...param, id: tgtId };
         await postRequest<unknown>(
@@ -30,5 +37,6 @@
 
     onMount(getEngineer);
 </script>
+
 <a href="/software-engineer" class="link">Back to list</a>
 <SoftwareEngineerForm engineer={engineer} isEdit={true} onSubmit={handleEdit} />

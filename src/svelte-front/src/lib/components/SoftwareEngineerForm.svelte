@@ -1,14 +1,17 @@
 <script lang="ts">
     import type { SoftwareEngineer, SoftwareEngineerRegist } from "$lib/types/software-engineer";
+
+    // propsの型定義・ParentComponentから値取得
     type Props = {
+        engineer?: SoftwareEngineer;
         isEdit: boolean;
         onSubmit: (param: SoftwareEngineer | SoftwareEngineerRegist) => Promise<void>;
-        engineer?: SoftwareEngineer;
     };
-
     const { engineer, isEdit, onSubmit }: Props = $props();
-    let name = $state(engineer?.name ?? '');
-    let techStack = $state(engineer?.techStack ?? '');
+
+    // reactiveな変数宣言
+    let name = $state<string>(engineer?.name ?? '');
+    let techStack = $state<string>(engineer?.techStack ?? '');
     $effect(() => {
         if (engineer) {
             name = engineer.name ?? '';
@@ -16,6 +19,9 @@
         }
     });
 
+
+
+    // FormSubmit時、Parent componentのSubmitHandling実行
     function handleSubmit(event: Event) {
         event.preventDefault();
         if (isEdit) {
