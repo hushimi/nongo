@@ -1,53 +1,79 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.flywaydb:flyway-mysql:11.8.2'
+    }
+}
+
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.6'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.5.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.flywaydb.flyway' version '11.14.0'
 }
 
 group = 'bushigen'
 version = '0.0.1-SNAPSHOT'
-description = 'Demo project for Spring Boot'
+description = 'Bushigen project'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(25)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'mysql:mysql-connector-java:8.0.33'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Flyway core
+    implementation 'org.flywaydb:flyway-core:11.8.2'
+    implementation 'org.flywaydb:flyway-mysql:11.8.2'
+
+    // MySQL JDBC driver
+    implementation 'com.mysql:mysql-connector-j:9.4.0'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// Flyway configuration
+flyway {
+    url = 'jdbc:mysql://localhost:3306/nongodb'
+    user = project.findProperty('db.user')
+    password = project.findProperty('db.password')
+    locations = ['classpath:db/migration']
+    baselineOnMigrate = true
+    baselineVersion = '0'
+    baselineDescription = 'Initial baseline'
+    cleanDisabled = false
+}
+
+// Svelte build integration
 task buildSvelteFront(type: Exec) {
-	workingDir = file('src/svelte-front')
-	commandLine 'npm.cmd', 'run', 'build'
+    workingDir = file('src/svelte-front')
+    commandLine 'npm.cmd', 'run', 'build'
 }
 
 bootRun.dependsOn buildSvelteFront
 build.dependsOn buildSvelteFront
 
 tasks.named('test') {
-	useJUnitPlatform()
-}
-
-task printPath(type: Exec) {
-    commandLine 'cmd', '/c', 'echo %PATH%'
+    useJUnitPlatform()
 }
