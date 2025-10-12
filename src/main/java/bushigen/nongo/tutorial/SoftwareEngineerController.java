@@ -9,14 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/api/software-engineers")
 public class SoftwareEngineerController {
 
     private final SoftwareEngineerService softwareEngineerService;
 
-    SoftwareEngineerController(SoftwareEngineerService softwareEngineerService) {
+    public SoftwareEngineerController(SoftwareEngineerService softwareEngineerService) {
         this.softwareEngineerService = softwareEngineerService;
     }
 
