@@ -1,8 +1,13 @@
-package bushigen.nongo.tutorial;
+package bushigen.nongo.dao;
 
 import org.apache.ibatis.annotations.*;
 import java.util.List;
+import bushigen.nongo.entity.SoftwareEngineer;
 
+/**
+ * Repository interface for SoftwareEngineer data access operations.
+ * Uses MyBatis annotations for SQL mapping.
+ */
 @Mapper
 public interface SoftwareEngineerRepository {
 

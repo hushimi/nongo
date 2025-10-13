@@ -1,9 +1,15 @@
-package bushigen.nongo.tutorial;
+package bushigen.nongo.service;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
+import bushigen.nongo.dao.SoftwareEngineerRepository;
+import bushigen.nongo.entity.SoftwareEngineer;
 
+/**
+ * Service class for managing SoftwareEngineer entities.
+ * This service provides business logic for CRUD operations on software engineers,
+ * acting as an intermediary between the controller and repository layers.
+ */
 @Service
 public class SoftwareEngineerService {
     private final SoftwareEngineerRepository softwareEngineerRepository;
