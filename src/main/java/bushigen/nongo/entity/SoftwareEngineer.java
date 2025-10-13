@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "Software Engineer entity")
 public class SoftwareEngineer {
 
-    @Schema(description = "Unique identifier of the software engineer", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "Unique identifier of the software engineer", example = "1")
     private Integer id;
 
     @Schema(description = "Name of the software engineer", example = "田中太郎")

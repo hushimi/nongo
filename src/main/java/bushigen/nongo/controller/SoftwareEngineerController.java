@@ -120,7 +120,6 @@ public class SoftwareEngineerController {
     )
     @PostMapping("/edit")
     public void editSoftwareEngineer(
-        @Parameter(description = "Software engineer data to update (must include ID)")
         @RequestBody SoftwareEngineer softwareEngineer
     ) {
         softwareEngineerService.updateSoftwareEngineer(softwareEngineer);

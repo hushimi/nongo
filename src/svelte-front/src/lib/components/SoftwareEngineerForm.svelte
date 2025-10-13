@@ -1,11 +1,15 @@
 <script lang="ts">
-    import type { SoftwareEngineer, SoftwareEngineerRegist } from "$lib/types/software-engineer";
+    import type {
+        SoftwareEngineer,
+        AddNewSoftwareEngineerRequest,
+        EditSoftwareEngineerRequest
+    } from "$lib/types";
 
     // propsの型定義・ParentComponentから値取得
     type Props = {
         engineer?: SoftwareEngineer;
         isEdit: boolean;
-        onSubmit: (param: SoftwareEngineer | SoftwareEngineerRegist) => Promise<void>;
+        onSubmit: (param: AddNewSoftwareEngineerRequest | EditSoftwareEngineerRequest) => Promise<void>;
     };
     const { engineer, isEdit, onSubmit }: Props = $props();
 
@@ -19,17 +23,28 @@
         }
     });
 
-
-
-    // FormSubmit時、Parent componentのSubmitHandling実行
+    /**
+     * Form Submit時、parentのonSubmitで指定された関数実行
+     */
     function handleSubmit(event: Event) {
         event.preventDefault();
-        if (isEdit) {
+        if (isEdit && engineer) {
             // 更新
-            onSubmit?.({ id: engineer?.id, name: name, techStack: techStack });
+            onSubmit?.({
+                softwareEngineer: {
+                    id: engineer?.id,
+                    name,
+                    techStack
+                }
+            });
         } else {
             // 登録
-            onSubmit?.({ name: name, techStack: techStack });
+            onSubmit?.({
+                softwareEngineerCreateRequest: {
+                    name,
+                    techStack
+                }
+            });
         }
     }
 </script>

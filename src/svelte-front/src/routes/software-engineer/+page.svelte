@@ -1,36 +1,38 @@
 <script lang="ts">
-    import type { SoftwareEngineer } from "$lib/types/software-engineer";
+    import { SoftwareEngineerApi } from "$lib/types";
+    import { apiConfig } from "$lib/config/api";
+    import type { SoftwareEngineerResponse } from "$lib/types";
     import Fa from "svelte-fa";
     import { faTrash } from "@fortawesome/free-solid-svg-icons";
     import { faEdit } from "@fortawesome/free-regular-svg-icons";
     import { onMount } from "svelte";
     import { goto } from '$app/navigation';
-    import { getRequest, postRequest } from "$lib/util/api";
 
-    let engineers: SoftwareEngineer[] = [];
+    const api = new SoftwareEngineerApi(apiConfig);
+    let engineers: SoftwareEngineerResponse[] = [];
 
     /**
      * エンジニア一覧の取得
      */
-    function getEngineers(): void {
-        getRequest<SoftwareEngineer[]>(
-            '/api/software-engineers',
-            undefined,
-            (data) => { engineers = data; },
-            (err) => { console.log(err) }
-        );
+    async function getEngineers(): Promise<void> {
+        try {
+            engineers = await api.getEngineers();
+        } catch (error) {
+            console.error('Failed to fetch record', error);
+        }
     }
 
     /**
      * 指定されたエンジニアデータ削除
      */
-    function deleteEngineer(id: number): void {
-        postRequest<any>(
-            '/api/software-engineers/delete',
-            id,
-            () => { getEngineers(); },
-            (err) => { console.log(err); }
-        );
+    async function deleteEngineer(id: number): Promise<void> {
+        try {
+            await api.deleteSoftwareEngineerById({
+                body: id
+            });
+        } catch (error) {
+            console.error('Failed to delete record', error);
+        }
     }
 
     onMount(getEngineers);
@@ -81,7 +83,7 @@
                         </td>
                         <td class="px-6 py-4 text-center">
                             <button class="block mx-auto cursor-pointer"
-                                on:click={() => deleteEngineer(engineer.id)}>
+                                on:click={() => engineer.id !== undefined && deleteEngineer(engineer.id)}>
                                 <Fa icon={faTrash} color="#000" size="lg" />
                             </button>
                         </td>

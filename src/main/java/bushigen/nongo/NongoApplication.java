@@ -8,7 +8,8 @@ import io.swagger.v3.oas.annotations.info.Info;
 
 @OpenAPIDefinition(info = @Info(
     title = "nongo for Bushigen",
-    description = "Management system for Bushigen family"
+    description = "Management system for Bushigen family",
+    version = "1.0.0"
 ))
 @SpringBootApplication
 @MapperScan("bushigen.nongo.dao")
