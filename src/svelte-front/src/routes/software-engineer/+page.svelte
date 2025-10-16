@@ -30,6 +30,7 @@
             await api.deleteSoftwareEngineerById({
                 body: id
             });
+            await getEngineers();
         } catch (error) {
             console.error('Failed to delete record', error);
         }
