@@ -1,4 +1,4 @@
-package bushigen.nongo.dto;
+package bushigen.nongo.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

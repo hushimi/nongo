@@ -21,6 +21,8 @@ public class DtoConverter {
         if (entity == null) {
             return null;
         }
+
+        // execute conversion function on the entity
         return converter.apply(entity);
     }
 

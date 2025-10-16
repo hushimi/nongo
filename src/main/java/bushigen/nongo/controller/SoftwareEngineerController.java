@@ -14,12 +14,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import bushigen.nongo.dto.SoftwareEngineerCreateRequest;
-import bushigen.nongo.dto.SoftwareEngineerResponse;
+import lombok.extern.slf4j.Slf4j;
+import bushigen.nongo.dto.request.SoftwareEngineerCreateRequest;
+import bushigen.nongo.dto.response.SoftwareEngineerResponse;
 import bushigen.nongo.entity.SoftwareEngineer;
 import bushigen.nongo.service.SoftwareEngineerService;
 import bushigen.nongo.util.DtoConverter;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/software-engineers")
 @Tag(name = "Software Engineer", description = "Software Engineer management API")
@@ -101,8 +103,8 @@ public class SoftwareEngineerController {
     ) {
         // RequestをEntityに変換
         SoftwareEngineer softwareEngineer = new SoftwareEngineer();
-        softwareEngineer.setName(createRequest.getName());
-        softwareEngineer.setTechStack(createRequest.getTechStack());
+        softwareEngineer.setName(createRequest.name());
+        softwareEngineer.setTechStack(createRequest.techStack());
 
         // 新規レコード作成
         softwareEngineerService.insertSoftwareEngineer(softwareEngineer);
