@@ -25,4 +25,12 @@ public class SoftwareEngineer {
 
     @Schema(description = "Technology stack and skills", example = "Java, Spring Boot, MySQL")
     private String techStack;
+
+    /**
+     * 新規レコード追加用のコンストラクタ
+     */
+    public SoftwareEngineer (String name, String techStack) {
+        this.name = name;
+        this.techStack = techStack;
+    }
 }

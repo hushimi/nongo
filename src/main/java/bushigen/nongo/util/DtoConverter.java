@@ -10,36 +10,36 @@ import java.util.stream.Collectors;
 public class DtoConverter {
 
     /**
-     * 単体のEntityをDTOクラスに変換
+     * TをRに変換
      *
      * @param entity 対象Entity
      * @param converter 変換するための関数
-     * @param <T> the entity type
-     * @param <R> the DTO type
+     * @param <T> source object
+     * @param <R> return object
      */
-    public static <T, R> R convert(T entity, Function<T, R> converter) {
-        if (entity == null) {
+    public static <T, R> R convert(T source, Function<T, R> converter) {
+        if (source == null) {
             return null;
         }
 
-        // execute conversion function on the entity
-        return converter.apply(entity);
+        // execute conversion function on the source
+        return converter.apply(source);
     }
 
     /**
-     * 複数のEntityをDTOクラスに変換
+     * 複数のTをRのリストに変換
      *
-     * @param entities 対象Entityの配列
+     * @param sources 対象Entityの配列
      * @param converter 変換するための関数
      * @param <T> the entity type
      * @param <R> the DTO type
      */
-    public static <T, R> List<R> convertList(List<T> entities, Function<T, R> converter) {
-        if (entities == null) {
+    public static <T, R> List<R> convertList(List<T> sources, Function<T, R> converter) {
+        if (sources == null) {
             return null;
         }
 
-        return entities.stream()
+        return sources.stream()
             .map(converter)
             .collect(Collectors.toList());
     }

@@ -49,7 +49,7 @@ public class SoftwareEngineerController {
     @GetMapping
     public List<SoftwareEngineerResponse> getEngineers() {
         List<SoftwareEngineer> softwareEngineers = softwareEngineerService.getAllSoftwareEngineers();
-
+        // Entityリストをレスポンス型リストに変換
         return DtoConverter.convertList(
             softwareEngineers,
             eng -> new SoftwareEngineerResponse(
@@ -76,6 +76,7 @@ public class SoftwareEngineerController {
         @PathVariable Long id
     ) {
         SoftwareEngineer engineer = softwareEngineerService.getSoftwareEngineerById(id);
+        // Entityをレスポンス型データに変換
         return DtoConverter.convert(
             engineer,
             eng -> new SoftwareEngineerResponse(
@@ -102,9 +103,10 @@ public class SoftwareEngineerController {
         @RequestBody SoftwareEngineerCreateRequest createRequest
     ) {
         // RequestをEntityに変換
-        SoftwareEngineer softwareEngineer = new SoftwareEngineer();
-        softwareEngineer.setName(createRequest.name());
-        softwareEngineer.setTechStack(createRequest.techStack());
+        SoftwareEngineer softwareEngineer = DtoConverter.convert(
+            createRequest,
+            req -> new SoftwareEngineer(req.name(), req.techStack())
+        );
 
         // 新規レコード作成
         softwareEngineerService.insertSoftwareEngineer(softwareEngineer);
@@ -124,6 +126,7 @@ public class SoftwareEngineerController {
     public void editSoftwareEngineer(
         @RequestBody SoftwareEngineer softwareEngineer
     ) {
+        // Entityをサービスに渡す
         softwareEngineerService.updateSoftwareEngineer(softwareEngineer);
     }
 
