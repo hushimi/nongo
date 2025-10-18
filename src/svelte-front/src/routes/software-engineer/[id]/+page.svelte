@@ -32,7 +32,6 @@
      */
      function submitWrapper(param: AddNewSoftwareEngineerRequest | EditSoftwareEngineerRequest): Promise<void> {
         if ('softwareEngineer' in param) {
-            console.log()
             return handleEdit(param);
         }
         console.warn('Type is not expected');
