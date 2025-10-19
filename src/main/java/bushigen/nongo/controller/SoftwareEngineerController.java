@@ -1,6 +1,8 @@
 package bushigen.nongo.controller;
 
 import java.util.List;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
+
 import bushigen.nongo.dto.request.SoftwareEngineerCreateRequest;
 import bushigen.nongo.dto.response.SoftwareEngineerResponse;
 import bushigen.nongo.entity.SoftwareEngineer;
@@ -100,7 +102,7 @@ public class SoftwareEngineerController {
     @PostMapping
     public void addNewSoftwareEngineer(
         @Parameter(description = "Software engineer data to create (ID will be auto-generated)")
-        @RequestBody SoftwareEngineerCreateRequest createRequest
+        @Valid @RequestBody SoftwareEngineerCreateRequest createRequest
     ) {
         // RequestをEntityに変換
         SoftwareEngineer softwareEngineer = DtoConverter.convert(

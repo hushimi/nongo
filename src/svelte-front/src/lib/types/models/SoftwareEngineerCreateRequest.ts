@@ -30,7 +30,7 @@ export interface SoftwareEngineerCreateRequest {
      * @type {string}
      * @memberof SoftwareEngineerCreateRequest
      */
-    techStack?: string;
+    techStack: string;
 }
 
 /**
@@ -38,6 +38,7 @@ export interface SoftwareEngineerCreateRequest {
  */
 export function instanceOfSoftwareEngineerCreateRequest(value: object): value is SoftwareEngineerCreateRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('techStack' in value) || value['techStack'] === undefined) return false;
     return true;
 }
 
@@ -52,7 +53,7 @@ export function SoftwareEngineerCreateRequestFromJSONTyped(json: any, ignoreDisc
     return {
         
         'name': json['name'],
-        'techStack': json['techStack'] == null ? undefined : json['techStack'],
+        'techStack': json['techStack'],
     };
 }
 

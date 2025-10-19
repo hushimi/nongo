@@ -1,81 +1,64 @@
 /**
- * GETリクエスト送信
- * @template T - レスポンス時のデータ型
- * @param {string} url
- * @param {Record<string, any>|undefined} params - URLパラメータ
- * @param {(data: T) => void} success - 成功時に実行される関数
- * @param {(error: any) => void} failed - 失敗時に実行される関数
- * @return {Promise<void>}
+ * Generic helper for safely calling OpenAPI-generated API methods.
+ * Keeps error handling and success logic consistent.
  */
-export async function getRequest<T>(
-    url: string,
-    params: Record<string, unknown> | undefined,
-    success: (data: T) => void,
-    failed: (error: unknown) => void
-): Promise<void> {
+import { ResponseError } from '$lib/types';
+type SuccessCallback<T> = (data: T) => void | Promise<void>;
+type ErrorCallback = (error: unknown) => void | Promise<void>;
+
+/**
+ * Get Request用
+ */
+export async function handleApiGet<T>(
+    apiMethod: () => Promise<T>,
+    onSuccess: SuccessCallback<T>,
+    onError?: ErrorCallback
+) {
     try {
-        // URLパラメータを作成
-        const query = params
-            ? `?${new URLSearchParams(params as Record<string, string>).toString()}`
-            : '';
-
-        // リクエスト送信・レスポンス取得
-        const response = await fetch(`${url}${query}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        });
-
-        // データ変換
-        const contentType = response.headers.get('content-type');
-        const isJson = contentType?.includes('application/json');
-        const data = isJson ? await response.json() : await response.text();
-
-        // callback実行
-        if (!response.ok) {
-            failed(data);
-        } else {
-            success(data as T);
-        }
-    } catch (error) {
-        failed(error);
+        const result = await apiMethod();
+        await onSuccess(result);
+    } catch (err) {
+        if (onError) await onError(err);
     }
 }
 
 /**
- * POSTリクエスト送信
- * @template T - レスポンスデータの型
- * @param {string} url
- * @param {any} body - リクエストボディ
- * @param {(data: T) => void} success - 成功時callback
- * @param {(error: any) => void} failed - 失敗時callback
- * @return {Promise<void>}
+ * POSTリクエスト用
+ * OpenAPI-CLIで作成したAPIリクエスト用クラスのメソッドを実行
  */
-export async function postRequest<T>(
-    url: string,
-    body: unknown,
-    success: (data: T) => void,
-    failed: (error: unknown) => void
-): Promise<void> {
+export async function handleApiPost<TReq, TRes>(
+    apiMethod: (req: TReq) => Promise<TRes>,
+    requestData: TReq,
+    onSuccess: (res: TRes) => void | Promise<void>,
+    onError?: (err: unknown) => void | Promise<void>
+) {
     try {
-        // リクエスト送信・レスポンス取得
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
-        });
+        const result = await apiMethod(requestData);
+        await onSuccess(result);
+    } catch (err: any) {
+        console.error("API Error caught in handleApiPost:", err);
 
-        // データ変換
-        const contentType = response.headers.get('content-type');
-        const isJson = contentType?.includes('application/json');
-        const data = isJson ? await response.json() : await response.text();
+        if (!onError) return;
 
-        // callback実行
-        if (!response.ok) {
-            failed(data);
-        } else {
-            success(data as T);
+        // errがresponseプロパティを持っている場合、エラーオブジェクト抽出
+        const response = err?.response as Response | undefined;
+        if (response instanceof Response) {
+            try {
+                const data = await response.json();
+                await onError(data);
+            } catch {
+                await onError({ general: "サーバーエラーの解析に失敗しました。" });
+            }
+            return;
         }
-    } catch (error) {
-        failed(error);
+
+        // 不明なレスポンス内容
+        if (typeof err === "object" && err !== null) {
+            await onError(err);
+            return;
+        }
+
+        // Fallback
+        await onError({ general: "予期せぬエラーが発生しました。" });
     }
 }

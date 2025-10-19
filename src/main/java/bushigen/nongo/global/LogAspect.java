@@ -1,4 +1,4 @@
-package bushigen.nongo.aspect;
+package bushigen.nongo.global;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -28,7 +28,7 @@ public class LogAspect {
             // 実行結果を呼び出し元に返却
             return result;
         } catch (Exception e) {
-            log.error("API Error: " + jp.getSignature());
+            log.error("XXXXX API Error XXXXX\n" + jp.getSignature());
             throw e;
         }
     }
