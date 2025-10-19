@@ -10,7 +10,7 @@
     import { handleApiPost } from '$lib/util/api';
 
     const api = new SoftwareEngineerApi(apiConfig);
-    let errors: Record<string, string> = {};
+    let errors = $state<Record<string, string>>({});
 
     /**
      * 型の確認を行い、paramがAddNewSoftwareEngineerRequestなら登録実行
@@ -33,11 +33,8 @@
         await handleApiPost(
             api.addNewSoftwareEngineerRaw.bind(api),
             param,
-            async () => {
-                goto('/software-engineer');
-            },
+            async () => goto('/software-engineer'),
             async (err) => {
-                console.error("API error:", err);
                 errors = err as Record<string, string>;
             }
         );
@@ -46,4 +43,8 @@
 </script>
 
 <a href="/software-engineer" class="link">Back to list</a>
-<SoftwareEngineerForm onSubmit={submitWrapper} {errors} isEdit={false} />
+<SoftwareEngineerForm
+    isEdit={false}
+    onSubmit={submitWrapper}
+    {errors}
+/>

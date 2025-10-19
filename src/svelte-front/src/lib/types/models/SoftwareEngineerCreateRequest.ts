@@ -14,7 +14,7 @@
 
 import { mapValues } from '../runtime';
 /**
- * Software engineer data to create (ID will be auto-generated)
+ * 
  * @export
  * @interface SoftwareEngineerCreateRequest
  */

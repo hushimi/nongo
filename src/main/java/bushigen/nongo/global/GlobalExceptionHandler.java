@@ -43,4 +43,18 @@ public class GlobalExceptionHandler {
 
         return errors;
     }
+
+    /**
+     * 指定IDが存在しない場合のエラーレスポンス
+    */
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map<String, String> handleBusinessException(BusinessException ex) {
+        Map<String, String> error = Map.of("general", ex.getMessage());
+
+        // JSON形式でログ表示
+        log.warn("Business logic error:\n{}", JsonLog.of(error));
+        return error;
+    }
 }

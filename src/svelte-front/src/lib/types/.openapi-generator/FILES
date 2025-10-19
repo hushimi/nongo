@@ -1,8 +1,8 @@
 apis/SoftwareEngineerApi.ts
 apis/index.ts
 index.ts
-models/SoftwareEngineer.ts
 models/SoftwareEngineerCreateRequest.ts
 models/SoftwareEngineerResponse.ts
+models/SoftwareEngineerUpdateRequest.ts
 models/index.ts
 runtime.ts

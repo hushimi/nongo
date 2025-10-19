@@ -15,17 +15,17 @@
 
 import * as runtime from '../runtime';
 import type {
-  SoftwareEngineer,
   SoftwareEngineerCreateRequest,
   SoftwareEngineerResponse,
+  SoftwareEngineerUpdateRequest,
 } from '../models/index';
 import {
-    SoftwareEngineerFromJSON,
-    SoftwareEngineerToJSON,
     SoftwareEngineerCreateRequestFromJSON,
     SoftwareEngineerCreateRequestToJSON,
     SoftwareEngineerResponseFromJSON,
     SoftwareEngineerResponseToJSON,
+    SoftwareEngineerUpdateRequestFromJSON,
+    SoftwareEngineerUpdateRequestToJSON,
 } from '../models/index';
 
 export interface AddNewSoftwareEngineerRequest {
@@ -37,7 +37,7 @@ export interface DeleteSoftwareEngineerByIdRequest {
 }
 
 export interface EditSoftwareEngineerRequest {
-    softwareEngineer: SoftwareEngineer;
+    softwareEngineerUpdateRequest: SoftwareEngineerUpdateRequest;
 }
 
 export interface GetEngineersByIdRequest {
@@ -139,10 +139,10 @@ export class SoftwareEngineerApi extends runtime.BaseAPI {
      * Update software engineer
      */
     async editSoftwareEngineerRaw(requestParameters: EditSoftwareEngineerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['softwareEngineer'] == null) {
+        if (requestParameters['softwareEngineerUpdateRequest'] == null) {
             throw new runtime.RequiredError(
-                'softwareEngineer',
-                'Required parameter "softwareEngineer" was null or undefined when calling editSoftwareEngineer().'
+                'softwareEngineerUpdateRequest',
+                'Required parameter "softwareEngineerUpdateRequest" was null or undefined when calling editSoftwareEngineer().'
             );
         }
 
@@ -160,7 +160,7 @@ export class SoftwareEngineerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SoftwareEngineerToJSON(requestParameters['softwareEngineer']),
+            body: SoftwareEngineerUpdateRequestToJSON(requestParameters['softwareEngineerUpdateRequest']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

@@ -16,12 +16,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import bushigen.nongo.dto.request.SoftwareEngineerCreateRequest;
-import bushigen.nongo.dto.response.SoftwareEngineerResponse;
-import bushigen.nongo.entity.SoftwareEngineer;
-import bushigen.nongo.service.SoftwareEngineerService;
 import bushigen.nongo.util.DtoConverter;
+import bushigen.nongo.dto.request.SoftwareEngineer.SoftwareEngineerCreateRequest;
+import bushigen.nongo.dto.request.SoftwareEngineer.SoftwareEngineerUpdateRequest;
+import bushigen.nongo.service.SoftwareEngineerService;
+import bushigen.nongo.entity.SoftwareEngineer;
+import bushigen.nongo.dto.response.SoftwareEngineerResponse;
 
 @Slf4j
 @RestController
@@ -39,14 +39,53 @@ public class SoftwareEngineerController {
     }
 
     /**
+     * 新規データ作成
+     */
+    @Operation(
+        summary = "Create new software engineer",
+        description = "Add a new software engineer to the system"
+    )
+    @PostMapping
+    public void addNewSoftwareEngineer(
+        @Valid @RequestBody SoftwareEngineerCreateRequest createRequest
+    ) {
+        // RequestをEntityに変換
+        SoftwareEngineer softwareEngineer = DtoConverter.convert(
+            createRequest,
+            req -> new SoftwareEngineer(req.name(), req.techStack())
+        );
+
+        // 新規レコード作成
+        softwareEngineerService.insertSoftwareEngineer(softwareEngineer);
+    }
+
+    /**
+     * ID指定で編集
+     */
+    @Operation(
+        summary = "Update software engineer",
+        description = "Update an existing software engineer"
+    )
+    @PostMapping("/edit")
+    public void editSoftwareEngineer(
+        @Valid @RequestBody SoftwareEngineerUpdateRequest updateRequest
+    ) {
+        // RequestをEntityに変換
+        SoftwareEngineer softwareEngineer = DtoConverter.convert(
+            updateRequest,
+            req -> new SoftwareEngineer(req.id(), req.name(), req.techStack())
+        );
+
+        // レコード更新
+        softwareEngineerService.updateSoftwareEngineer(softwareEngineer);
+    }
+
+    /**
      * List取得
      */
     @Operation(
         summary = "Get all software engineers",
-        description = "Retrieve a list of all software engineers",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
-        }
+        description = "Retrieve a list of all software engineers"
     )
     @GetMapping
     public List<SoftwareEngineerResponse> getEngineers() {
@@ -67,10 +106,7 @@ public class SoftwareEngineerController {
      */
     @Operation(
         summary = "Get software engineer by ID",
-        description = "Retrieve a specific software engineer by their ID",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved software engineer")
-        }
+        description = "Retrieve a specific software engineer by their ID"
     )
     @GetMapping("{id}")
     public SoftwareEngineerResponse getEngineersById(
@@ -87,49 +123,6 @@ public class SoftwareEngineerController {
                 eng.getTechStack()
             )
         );
-    }
-
-     /**
-     * 新規データ作成
-     */
-    @Operation(
-        summary = "Create new software engineer",
-        description = "Add a new software engineer to the system",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Software engineer created successfully"),
-        }
-    )
-    @PostMapping
-    public void addNewSoftwareEngineer(
-        @Parameter(description = "Software engineer data to create (ID will be auto-generated)")
-        @Valid @RequestBody SoftwareEngineerCreateRequest createRequest
-    ) {
-        // RequestをEntityに変換
-        SoftwareEngineer softwareEngineer = DtoConverter.convert(
-            createRequest,
-            req -> new SoftwareEngineer(req.name(), req.techStack())
-        );
-
-        // 新規レコード作成
-        softwareEngineerService.insertSoftwareEngineer(softwareEngineer);
-    }
-
-    /**
-     * ID指定で編集
-     */
-    @Operation(
-        summary = "Update software engineer",
-        description = "Update an existing software engineer",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Software engineer updated successfully"),
-        }
-    )
-    @PostMapping("/edit")
-    public void editSoftwareEngineer(
-        @RequestBody SoftwareEngineer softwareEngineer
-    ) {
-        // Entityをサービスに渡す
-        softwareEngineerService.updateSoftwareEngineer(softwareEngineer);
     }
 
     /**
@@ -150,7 +143,6 @@ public class SoftwareEngineerController {
     )
     @PostMapping("/delete")
     public void deleteSoftwareEngineerById(
-        @Parameter(description = "ID of the software engineer to delete")
         @RequestBody Long id
     ) {
         softwareEngineerService.deleteSoftwareEngineerById(id);

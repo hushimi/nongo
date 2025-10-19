@@ -17,7 +17,7 @@ public class LogAspect {
         // 開始ログ出力
         System.out.println("\n===== Start API =====");
         System.out.println("Class: " + jp.getSignature().getDeclaringTypeName());
-        System.out.println("Method: " + jp.getSignature().getName());
+        System.out.println("Method: " + jp.getSignature().getName() + "\n");
 
         try {
             // メソッド実行

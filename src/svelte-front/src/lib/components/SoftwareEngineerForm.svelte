@@ -1,26 +1,25 @@
 <script lang="ts">
     import type {
-        SoftwareEngineer,
         AddNewSoftwareEngineerRequest,
-        EditSoftwareEngineerRequest
+        EditSoftwareEngineerRequest,
+        SoftwareEngineerResponse
     } from "$lib/types";
 
-    // propsの型定義・ParentComponentから値取得
-    type Props = {
-        engineer?: SoftwareEngineer;
+    // 親Componentから値取得
+    const props = $props<{
+        engineer?: SoftwareEngineerResponse;
         isEdit: boolean;
         onSubmit: (param: AddNewSoftwareEngineerRequest | EditSoftwareEngineerRequest) => Promise<void>;
         errors?: Record<string, string>;
-    };
-    const { engineer, isEdit, onSubmit, errors = {} }: Props = $props();
+    }>();
 
-    // reactiveな変数宣言
-    let name = $state<string>(engineer?.name ?? '');
-    let techStack = $state<string>(engineer?.techStack ?? '');
+    let name = $state<string>(props.engineer?.name ?? '');
+    let techStack = $state<string>(props.engineer?.techStack ?? '');
+
     $effect(() => {
-        if (engineer) {
-            name = engineer.name ?? '';
-            techStack = engineer.techStack ?? '';
+        if (props.engineer) {
+            name = props.engineer.name ?? '';
+            techStack = props.engineer.techStack ?? '';
         }
     });
 
@@ -29,18 +28,18 @@
      */
     function handleSubmit(event: Event) {
         event.preventDefault();
-        if (isEdit && engineer) {
+        if (props.isEdit && props.engineer) {
             // 更新
-            onSubmit?.({
-                softwareEngineer: {
-                    id: engineer?.id,
+            props.onSubmit?.({
+                softwareEngineerUpdateRequest: {
+                    id: props.engineer.id as number,
                     name,
                     techStack
                 }
             });
         } else {
             // 登録
-            onSubmit?.({
+            props.onSubmit?.({
                 softwareEngineerCreateRequest: {
                     name,
                     techStack
@@ -53,8 +52,8 @@
 <div class="card w-2/5 mx-auto shadow-sm bg-base-100">
     <form onsubmit={handleSubmit} class="space-y-4 card-body">
         <!-- 全体エラー -->
-        {#if errors.general}
-            <p class="text-error text-sm">{errors.general}</p>
+        {#if props.errors?.general}
+            <p class="text-error text-sm">{props.errors.general}</p>
         {/if}
 
         <div>
@@ -66,8 +65,8 @@
                 class="border rounded p-2 w-full"
                 autocomplete="off"
             />
-            {#if errors.name}
-                <p class="text-error text-sm">{errors.name}</p>
+            {#if props.errors?.name}
+                <p class="text-error text-sm">{props.errors.name}</p>
             {/if}
         </div>
         <div>
@@ -79,12 +78,12 @@
                 class="border rounded p-2 w-full"
                 autocomplete="off"
             />
-            {#if errors.techStack}
-                <p class="text-error text-sm">{errors.techStack}</p>
+            {#if props.errors?.techStack}
+                <p class="text-error text-sm">{props.errors.techStack}</p>
             {/if}
         </div>
         <button type="submit" class="btn btn-primary">
-            {isEdit ? 'Update' : 'Create'}
+            {props.isEdit ? 'Update' : 'Create'}
         </button>
     </form>
 </div>

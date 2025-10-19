@@ -9,7 +9,7 @@ import bushigen.nongo.entity.SoftwareEngineer;
  * Uses MyBatis annotations for SQL mapping.
  */
 @Mapper
-public interface SoftwareEngineerRepository {
+public interface SoftwareEngineerMapper {
 
     @Select("""
         SELECT
@@ -43,7 +43,7 @@ public interface SoftwareEngineerRepository {
             tech_stack = #{techStack}
         WHERE id = #{id}
     """)
-    void update(SoftwareEngineer softwareEngineer);
+    int update(SoftwareEngineer softwareEngineer);
 
     @Delete("""
         DELETE FROM software_engineer

@@ -1,4 +1,4 @@
-package bushigen.nongo.dto.request;
+package bushigen.nongo.dto.request.SoftwareEngineer;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
