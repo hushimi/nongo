@@ -2,9 +2,11 @@ package bushigen.nongo.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import bushigen.nongo.dao.SoftwareEngineerMapper;
+import bushigen.nongo.dao.generated.SoftwareEngineerMapper;
 import bushigen.nongo.entity.SoftwareEngineer;
 import bushigen.nongo.global.BusinessException;
+import static bushigen.nongo.dao.generated.SoftwareEngineerDynamicSqlSupport.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 /**
  * Service class for managing SoftwareEngineer entities.

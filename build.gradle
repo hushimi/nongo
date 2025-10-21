@@ -1,4 +1,6 @@
-// gradle内で使用するプラグイン(CorePlugin/GradlePluginPortal以外)
+// ------------------------------------------------------------
+// Gradle buildscript (for Flyway only)
+// ------------------------------------------------------------
 buildscript {
     repositories {
         mavenCentral()
@@ -8,7 +10,9 @@ buildscript {
     }
 }
 
-// gradle内で使用するプラグイン
+// ------------------------------------------------------------
+// Gradle core plugins
+// ------------------------------------------------------------
 plugins {
     id 'java'
     id 'io.spring.dependency-management' version '1.1.7'
@@ -16,6 +20,9 @@ plugins {
     id 'org.flywaydb.flyway' version '11.14.0'
 }
 
+// ------------------------------------------------------------
+// Project info
+// ------------------------------------------------------------
 group = 'bushigen'
 version = '0.0.1-SNAPSHOT'
 description = 'Bushigen project'
@@ -26,43 +33,59 @@ java {
     }
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
+// ------------------------------------------------------------
+// Repositories
+// ------------------------------------------------------------
 repositories {
     mavenCentral()
 }
 
-// アプリ内で使用するプラグイン
+// ------------------------------------------------------------
+// Configurations
+// ------------------------------------------------------------
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    myBatisGen
+}
+
+// ------------------------------------------------------------
+// Dependencies
+// ------------------------------------------------------------
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    // AspectOrientedProgramming
     implementation 'org.springframework.boot:spring-boot-starter-aop'
-    // validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    // To generate openapi doc
+    // OpenAPI
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
 
-    // DAO libraries
+    // DAO libs
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
+    implementation 'org.mybatis.dynamic-sql:mybatis-dynamic-sql:1.5.0'
     implementation 'org.flywaydb:flyway-core:11.8.2'
     implementation 'org.flywaydb:flyway-mysql:11.8.2'
     implementation 'com.mysql:mysql-connector-j:9.4.0'
 
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    // MyBatis Generator
+    myBatisGen 'org.mybatis.generator:mybatis-generator-core:1.4.2'
+    myBatisGen 'com.mysql:mysql-connector-j:9.4.0'
+
+    // Dev & Test
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// ------------------------------------------------------------
 // Flyway configuration
+// ------------------------------------------------------------
 flyway {
     url = 'jdbc:mysql://localhost:3306/nongodb'
     user = project.findProperty('db.user')
@@ -74,11 +97,23 @@ flyway {
     cleanDisabled = false
 }
 
+// ------------------------------------------------------------
+// MyBatis Generator task (JavaExec)
+// ------------------------------------------------------------
+task mybatisGenerate(type: JavaExec) {
+    mainClass.set("org.mybatis.generator.api.ShellRunner")
+    classpath = configurations.myBatisGen
+    args = ["-configfile", "src/main/resources/generatorConfig.xml", "-overwrite"]
+}
+
+// ------------------------------------------------------------
 // Svelte build integration
+// ------------------------------------------------------------
 task buildSvelteFront(type: Exec) {
     workingDir = file('src/svelte-front')
     commandLine 'npm.cmd', 'run', 'build'
 }
+
 bootRun.dependsOn buildSvelteFront
 build.dependsOn buildSvelteFront
 
