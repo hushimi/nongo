@@ -3,10 +3,8 @@ package bushigen.nongo.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import bushigen.nongo.dao.generated.SoftwareEngineerMapper;
-import bushigen.nongo.entity.SoftwareEngineer;
-import bushigen.nongo.global.BusinessException;
-import static bushigen.nongo.dao.generated.SoftwareEngineerDynamicSqlSupport.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import bushigen.nongo.model.SoftwareEngineer;
+import bushigen.nongo.model.SoftwareEngineerExample;
 
 /**
  * Service class for managing SoftwareEngineer entities.
@@ -15,6 +13,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
  */
 @Service
 public class SoftwareEngineerService {
+
     private final SoftwareEngineerMapper mapper;
 
     /**
@@ -30,19 +29,15 @@ public class SoftwareEngineerService {
      */
     public void insertSoftwareEngineer(SoftwareEngineer softwareEngineer)
     {
-        mapper.insert(softwareEngineer);
+        mapper.insertSelective(softwareEngineer);
     }
 
     /**
      * データ更新
      */
-    public void updateSoftwareEngineer(SoftwareEngineer engineer) {
-        int updatedRows = mapper.update(engineer);
-
-        // 更新件数が0の場合Exception
-        if (updatedRows == 0) {
-            throw new BusinessException("不正なリクエストです");
-        }
+    public void updateSoftwareEngineer(SoftwareEngineer engineer)
+    {
+        mapper.updateByPrimaryKeySelective(engineer);
     }
 
     /**
@@ -50,7 +45,9 @@ public class SoftwareEngineerService {
      */
     public List<SoftwareEngineer> getAllSoftwareEngineers()
     {
-        return mapper.findAll();
+        SoftwareEngineerExample example = new SoftwareEngineerExample();
+        example.setOrderByClause("id desc");
+        return mapper.selectByExample(example);
     }
 
     /**
@@ -58,17 +55,13 @@ public class SoftwareEngineerService {
      */
     public SoftwareEngineer getSoftwareEngineerById(Long id)
     {
-        SoftwareEngineer engineer = mapper.findById(id);
-        if (engineer == null) {
-            throw new IllegalStateException(id + " not found");
-        }
-        return engineer;
+        return mapper.selectByPrimaryKey(id);
     }
 
     /**
      * ID指定で削除
      */
     public void deleteSoftwareEngineerById(Long id) {
-        mapper.deleteById(id);
+        mapper.deleteByPrimaryKey(id);
     }
 }

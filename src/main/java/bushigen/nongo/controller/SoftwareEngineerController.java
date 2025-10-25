@@ -3,25 +3,20 @@ package bushigen.nongo.controller;
 import java.util.List;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import bushigen.nongo.util.DtoConverter;
 import bushigen.nongo.dto.request.SoftwareEngineer.SoftwareEngineerCreateRequest;
 import bushigen.nongo.dto.request.SoftwareEngineer.SoftwareEngineerUpdateRequest;
 import bushigen.nongo.service.SoftwareEngineerService;
-import bushigen.nongo.entity.SoftwareEngineer;
+import bushigen.nongo.model.SoftwareEngineer;
 import bushigen.nongo.dto.response.SoftwareEngineerResponse;
+import bushigen.nongo.entitymapper.SoftwareEngineerObjMapper;
 
 @Slf4j
 @RestController
@@ -29,13 +24,15 @@ import bushigen.nongo.dto.response.SoftwareEngineerResponse;
 @Tag(name = "Software Engineer", description = "Software Engineer management API")
 public class SoftwareEngineerController {
 
-    private final SoftwareEngineerService softwareEngineerService;
+    private final SoftwareEngineerService service;
+    private final SoftwareEngineerObjMapper entityMapper;
 
     /**
      * Constructor
      */
-    public SoftwareEngineerController(SoftwareEngineerService softwareEngineerService) {
-        this.softwareEngineerService = softwareEngineerService;
+    public SoftwareEngineerController(SoftwareEngineerService service, SoftwareEngineerObjMapper entityMapper) {
+        this.service = service;
+        this.entityMapper = entityMapper;
     }
 
     /**
@@ -49,14 +46,11 @@ public class SoftwareEngineerController {
     public void addNewSoftwareEngineer(
         @Valid @RequestBody SoftwareEngineerCreateRequest createRequest
     ) {
-        // RequestをEntityに変換
-        SoftwareEngineer softwareEngineer = DtoConverter.convert(
-            createRequest,
-            req -> new SoftwareEngineer(req.name(), req.techStack())
-        );
+        // RequestをModelに変換
+        SoftwareEngineer seModel = entityMapper.toModel(createRequest);
 
         // 新規レコード作成
-        softwareEngineerService.insertSoftwareEngineer(softwareEngineer);
+        service.insertSoftwareEngineer(seModel);
     }
 
     /**
@@ -71,13 +65,10 @@ public class SoftwareEngineerController {
         @Valid @RequestBody SoftwareEngineerUpdateRequest updateRequest
     ) {
         // RequestをEntityに変換
-        SoftwareEngineer softwareEngineer = DtoConverter.convert(
-            updateRequest,
-            req -> new SoftwareEngineer(req.id(), req.name(), req.techStack())
-        );
+        SoftwareEngineer seModel = entityMapper.toModel(updateRequest);
 
         // レコード更新
-        softwareEngineerService.updateSoftwareEngineer(softwareEngineer);
+        service.updateSoftwareEngineer(seModel);
     }
 
     /**
@@ -89,16 +80,9 @@ public class SoftwareEngineerController {
     )
     @GetMapping
     public List<SoftwareEngineerResponse> getEngineers() {
-        List<SoftwareEngineer> softwareEngineers = softwareEngineerService.getAllSoftwareEngineers();
-        // Entityリストをレスポンス型リストに変換
-        return DtoConverter.convertList(
-            softwareEngineers,
-            eng -> new SoftwareEngineerResponse(
-                eng.getId(),
-                eng.getName(),
-                eng.getTechStack()
-            )
-        );
+        List<SoftwareEngineer> softwareEngineers = service.getAllSoftwareEngineers();
+        // modelリストをレスポンス型リストに変換
+        return entityMapper.toResponseList(softwareEngineers);
     }
 
     /**
@@ -113,16 +97,9 @@ public class SoftwareEngineerController {
         @Parameter(description = "ID of the software engineer to retrieve")
         @PathVariable Long id
     ) {
-        SoftwareEngineer engineer = softwareEngineerService.getSoftwareEngineerById(id);
+        SoftwareEngineer engineer = service.getSoftwareEngineerById(id);
         // Entityをレスポンス型データに変換
-        return DtoConverter.convert(
-            engineer,
-            eng -> new SoftwareEngineerResponse(
-                eng.getId(),
-                eng.getName(),
-                eng.getTechStack()
-            )
-        );
+        return entityMapper.toResponse(engineer);
     }
 
     /**
@@ -145,7 +122,7 @@ public class SoftwareEngineerController {
     public void deleteSoftwareEngineerById(
         @RequestBody Long id
     ) {
-        softwareEngineerService.deleteSoftwareEngineerById(id);
+        service.deleteSoftwareEngineerById(id);
     }
 
 }

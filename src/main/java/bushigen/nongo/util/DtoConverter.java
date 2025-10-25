@@ -2,6 +2,8 @@ package bushigen.nongo.util;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -27,6 +29,21 @@ public class DtoConverter {
     }
 
     /**
+     * Convert one object using a supplier and setter function.
+     * Example:
+     *   DtoConverter.convert(req, SoftwareEngineer::new, (src, dest) -> {
+     *       dest.setName(src.name());
+     *       dest.setTechStack(src.techStack());
+     *   });
+     */
+    public static <S, T> T convert(S source, Supplier<T> targetSupplier, BiConsumer<S, T> mappingAction) {
+        if (source == null) return null;
+        T target = targetSupplier.get();
+        mappingAction.accept(source, target);
+        return target;
+    }
+
+    /**
      * 複数のTをRのリストに変換
      *
      * @param sources 対象Entityの配列
@@ -42,5 +59,19 @@ public class DtoConverter {
         return sources.stream()
             .map(converter)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Convert list using supplier and setter function.
+     */
+    public static <S, T> List<T> convertList(List<S> sources, Supplier<T> targetSupplier, BiConsumer<S, T> mappingAction) {
+        if (sources == null) return List.of();
+        return sources.stream()
+                .map(src -> {
+                    T target = targetSupplier.get();
+                    mappingAction.accept(src, target);
+                    return target;
+                })
+                .collect(Collectors.toList());
     }
 }

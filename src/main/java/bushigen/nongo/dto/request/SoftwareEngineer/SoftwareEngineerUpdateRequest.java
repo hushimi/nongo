@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 public record SoftwareEngineerUpdateRequest(
     @Schema(description = "ID of the software engineer", example = "1")
     @NotNull(message = "不正なリクエストです")
-    Integer id,
+    Long id,
 
     @Schema(description = "Name of the software engineer", example = "田中太郎")
     @NotBlank(message = "Nameは必須です")

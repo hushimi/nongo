@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class SoftwareEngineerResponse {
 
     @Schema(description = "Unique identifier of the software engineer", example = "1")
-    private Integer id;
+    private Long id;
 
     @Schema(description = "Name of the software engineer", example = "田中太郎")
     private String name;
