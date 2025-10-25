@@ -7,24 +7,48 @@ type SuccessCallback<T> = (data: T) => void | Promise<void>;
 type ErrorCallback = (error: unknown) => void | Promise<void>;
 
 /**
- * Get Request用
+ * GETリクエスト用
+ * OpenAPI-CLIで作成したクラスのメソッドを実行
  */
-export async function handleApiGet<T>(
-    apiMethod: () => Promise<T>,
-    onSuccess: SuccessCallback<T>,
-    onError?: ErrorCallback
+export async function handleApiGet<TReq, TRes>(
+    apiMethod: (req: TReq) => Promise<TRes>,
+    requestData: TReq,
+    onSuccess: (res: TRes) => void | Promise<void>,
+    onError?: (err: unknown) => void | Promise<void>
 ) {
     try {
-        const result = await apiMethod();
+        const result = await apiMethod(requestData);
         await onSuccess(result);
-    } catch (err) {
-        if (onError) await onError(err);
+    } catch (err: any) {
+        console.error("API Error caught in handleApiGet:", err);
+
+        if (!onError) return;
+
+        // errがresponseプロパティを持っている場合、エラーオブジェクト抽出
+        const response = err?.response as Response | undefined;
+        if (response instanceof Response) {
+            try {
+                const data = await response.json();
+                await onError(data);
+            } catch {
+                await onError({ general: "サーバーエラーの解析に失敗しました。" });
+            }
+            return;
+        }
+
+        if (typeof err === "object" && err !== null) {
+            await onError(err);
+            return;
+        }
+
+        await onError({ general: "予期せぬエラーが発生しました。" });
     }
 }
 
+
 /**
  * POSTリクエスト用
- * OpenAPI-CLIで作成したAPIリクエスト用クラスのメソッドを実行
+ * OpenAPI-CLIで作成したクラスのメソッドを実行
  */
 export async function handleApiPost<TReq, TRes>(
     apiMethod: (req: TReq) => Promise<TRes>,

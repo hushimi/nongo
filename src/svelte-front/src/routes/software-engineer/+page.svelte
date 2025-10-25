@@ -1,12 +1,13 @@
 <script lang="ts">
-    import { SoftwareEngineerApi } from "$lib/types";
-    import { apiConfig } from "$lib/config/api";
-    import type { SoftwareEngineerResponse } from "$lib/types";
+    import { onMount } from "svelte";
+    import { goto } from '$app/navigation';
     import Fa from "svelte-fa";
     import { faTrash } from "@fortawesome/free-solid-svg-icons";
     import { faEdit } from "@fortawesome/free-regular-svg-icons";
-    import { onMount } from "svelte";
-    import { goto } from '$app/navigation';
+    import { apiConfig } from "$lib/config/api";
+    import { SoftwareEngineerApi } from "$lib/types";
+    import { handleApiGet, handleApiPost } from "$lib/util/api";
+    import type { SoftwareEngineerResponse } from "$lib/types";
 
     const api = new SoftwareEngineerApi(apiConfig);
     let engineers: SoftwareEngineerResponse[] = [];
@@ -15,25 +16,24 @@
      * エンジニア一覧の取得
      */
     async function getEngineers(): Promise<void> {
-        try {
-            engineers = await api.getEngineers();
-        } catch (error) {
-            console.error('Failed to fetch record', error);
-        }
+        handleApiGet(
+            api.getEngineers.bind(api),
+            {},
+            (result) => { engineers = result; },
+            async (err) => { console.error(err); }
+        )
     }
 
     /**
      * 指定されたエンジニアデータ削除
      */
     async function deleteEngineer(id: number): Promise<void> {
-        try {
-            await api.deleteSoftwareEngineerById({
-                body: id
-            });
-            await getEngineers();
-        } catch (error) {
-            console.error('Failed to delete record', error);
-        }
+        handleApiPost(
+            api.deleteSoftwareEngineerByIdRaw.bind(api),
+            {body: id},
+            async (result) => getEngineers(),
+            (err) => { console.error(err) }
+        )
     }
 
     onMount(getEngineers);

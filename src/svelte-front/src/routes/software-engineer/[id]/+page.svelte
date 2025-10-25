@@ -4,12 +4,12 @@
     import { apiConfig } from "$lib/config/api";
     import { SoftwareEngineerApi } from "$lib/types";
     import SoftwareEngineerForm from '$lib/components/SoftwareEngineerForm.svelte';
+    import { handleApiPost, handleApiGet } from '$lib/util/api.js';
     import type {
         SoftwareEngineerResponse,
         EditSoftwareEngineerRequest,
         AddNewSoftwareEngineerRequest,
     } from "$lib/types";
-    import { handleApiPost } from '$lib/util/api.js';
 
     // URLからID取得
     const { data } = $props();
@@ -18,17 +18,18 @@
     // エンジニア情報定義
     const api = new SoftwareEngineerApi(apiConfig);
     let errors = $state<Record<string, string>>({});
-    let engineer = $state<SoftwareEngineerResponse | undefined>(undefined);
+    let engineer = $state<SoftwareEngineerResponse>();
 
     /**
      * GET: エンジニア情報単体取得
      */
     async function getEngineer(): Promise<void> {
-        try {
-            engineer = await api.getEngineersById({id: tgtId});
-        } catch (error) {
-            console.error('Failed to fetch record', error);
-        }
+        handleApiGet<{ id: number }, SoftwareEngineerResponse>(
+            api.getEngineersById.bind(api),
+            { id: tgtId },
+            (result) => { engineer = result; },
+            (error) => { console.error(error); }
+        );
     }
 
     /**
