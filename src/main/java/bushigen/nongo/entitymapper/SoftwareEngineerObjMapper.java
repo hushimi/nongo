@@ -7,8 +7,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-import bushigen.nongo.dto.request.SoftwareEngineer.SoftwareEngineerCreateRequest;
-import bushigen.nongo.dto.request.SoftwareEngineer.SoftwareEngineerUpdateRequest;
+import bushigen.nongo.dto.request.SoftwareEngineerCreateRequest;
+import bushigen.nongo.dto.request.SoftwareEngineerUpdateRequest;
 import bushigen.nongo.dto.response.SoftwareEngineerResponse;
 import bushigen.nongo.model.SoftwareEngineer;
 

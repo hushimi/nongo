@@ -11,10 +11,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import bushigen.nongo.dto.request.SoftwareEngineer.SoftwareEngineerCreateRequest;
-import bushigen.nongo.dto.request.SoftwareEngineer.SoftwareEngineerUpdateRequest;
 import bushigen.nongo.service.SoftwareEngineerService;
 import bushigen.nongo.model.SoftwareEngineer;
+import bushigen.nongo.dto.request.SoftwareEngineerCreateRequest;
+import bushigen.nongo.dto.request.SoftwareEngineerUpdateRequest;
 import bushigen.nongo.dto.response.SoftwareEngineerResponse;
 import bushigen.nongo.entitymapper.SoftwareEngineerObjMapper;
 

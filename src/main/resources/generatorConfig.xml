@@ -4,6 +4,12 @@
 
 <generatorConfiguration>
     <context id="MySQLTables" targetRuntime="MyBatis3">
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>
+
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+        </commentGenerator>
 
         <!-- データベース接続設定 -->
         <jdbcConnection
@@ -22,6 +28,9 @@
 
         <!-- テーブル設定 -->
         <table tableName="software_engineer" domainObjectName="SoftwareEngineer">
+            <generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+        </table>
+        <table tableName="users" domainObjectName="Users">
             <generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
         </table>
     </context>
