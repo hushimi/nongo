@@ -19,48 +19,56 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtUtil jwtUtil;
+  private final JwtUtil jwtUtil;
 
-    /**
-     * ✅ Use the new AuthenticationManager bean instead of manually creating DaoAuthenticationProvider
-     */
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+  /**
+   * ✅ Use the new AuthenticationManager bean instead of manually creating DaoAuthenticationProvider
+   */
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+      return config.getAuthenticationManager();
+  }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(c -> c.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login").permitAll()
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(
-                new AuthorizeFilter(jwtUtil),
-                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class
-            );
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+      .cors(c -> c.configurationSource(corsConfigurationSource()))
+      .csrf(csrf -> csrf.disable())
+      .authorizeHttpRequests(auth -> auth
+          .requestMatchers(
+            "/",
+            "/index.html",
+            "/favicon.ico",
+            "/_app/**",
+            "/login",
+            "/api-docs*/**",
+            "/swagger-ui/**"
+          ).permitAll()
+          .anyRequest().authenticated()
+      )
+      .addFilterBefore(
+        new AuthorizeFilter(jwtUtil),
+        org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class
+      );
 
-        return http.build();
-    }
+    return http.build();
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cors = new CorsConfiguration();
-        cors.setAllowedOrigins(List.of("http://localhost:5173"));
-        cors.setAllowedMethods(List.of("GET", "POST"));
-        cors.setAllowedHeaders(List.of("*"));
-        cors.setExposedHeaders(List.of("Authorization"));
-        cors.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
-        src.registerCorsConfiguration("/**", cors);
-        return src;
-    }
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration cors = new CorsConfiguration();
+    cors.setAllowedOrigins(List.of("http://localhost:5173"));
+    cors.setAllowedMethods(List.of("GET", "POST"));
+    cors.setAllowedHeaders(List.of("*"));
+    cors.setExposedHeaders(List.of("Authorization"));
+    cors.setAllowCredentials(true);
+    UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
+    src.registerCorsConfiguration("/**", cors);
+    return src;
+  }
 }

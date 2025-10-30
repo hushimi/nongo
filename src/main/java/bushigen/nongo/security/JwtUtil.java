@@ -11,28 +11,33 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Component
 public class JwtUtil {
-    private final Algorithm algorithm;
-    private final long expireSeconds;
+  private final Algorithm algorithm;
+  private final long expireSeconds;
 
-    public JwtUtil(
-        @Value("${app.jwt.secret}") String secret,
-        @Value("${app.jwt.expire-seconds}") long expireSeconds
-    ) {
-        this.algorithm = Algorithm.HMAC256(secret);
-        this.expireSeconds = expireSeconds;
-    }
+  /**
+   * application.propertiesを元にsecretと有効期間を設定
+   * @param secret
+   * @param expireSeconds
+   */
+  public JwtUtil(
+    @Value("${app.jwt.secret}") String secret,
+    @Value("${app.jwt.expire-seconds}") long expireSeconds
+  ) {
+    this.algorithm = Algorithm.HMAC256(secret);
+    this.expireSeconds = expireSeconds;
+  }
 
-    public String createToken(String username) {
-        Date now = new Date();
-        Date exp = new Date(now.getTime() + expireSeconds * 1000);
-        return JWT.create()
-            .withClaim("username", username)
-            .withIssuedAt(now)
-            .withExpiresAt(exp)
-            .sign(algorithm);
-    }
+  public String createToken(String username) {
+    Date now = new Date();
+    Date exp = new Date(now.getTime() + expireSeconds * 1000);
+    return JWT.create()
+      .withClaim("username", username)
+      .withIssuedAt(now)
+      .withExpiresAt(exp)
+      .sign(algorithm);
+  }
 
-    public DecodedJWT verify(String token) {
-        return JWT.require(algorithm).build().verify(token);
-    }
+  public DecodedJWT verify(String token) {
+    return JWT.require(algorithm).build().verify(token);
+  }
 }

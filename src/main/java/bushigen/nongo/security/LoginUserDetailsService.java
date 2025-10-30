@@ -15,18 +15,20 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class LoginUserDetailsService implements UserDetailsService{
-    private final UsersMapper usersMapper;
+  private final UsersMapper usersMapper;
 
-    @Override
-    public LoginUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UsersExample example = new UsersExample();
-        example.createCriteria().andUserNameEqualTo(username);
-        List<Users> users = usersMapper.selectByExample(example);
-        if (users.isEmpty()) {
-            throw new UsernameNotFoundException("Please try again");
-        }
+  @Override
+  public LoginUserDetails loadUserByUsername(String username)
+    throws UsernameNotFoundException {
 
-        Users user = users.get(0);
-        return new LoginUserDetails(user);
+    UsersExample example = new UsersExample();
+    example.createCriteria().andUserNameEqualTo(username);
+    List<Users> users = usersMapper.selectByExample(example);
+    if (users.isEmpty()) {
+        throw new UsernameNotFoundException("Please try again");
     }
+
+    Users user = users.get(0);
+    return new LoginUserDetails(user);
+  }
 }
