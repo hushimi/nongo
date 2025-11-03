@@ -41,6 +41,7 @@ public class SecurityConfig {
           "/favicon.ico",
           "/_app/**",
           "/login",
+          "/signup",
           "/api-docs*/**",
           "/swagger-ui/**"
         ).permitAll()

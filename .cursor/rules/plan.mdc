@@ -1,0 +1,49 @@
+---
+alwaysApply: false
+---
+# Project Plan for Spring Boot + SvelteKit Full-Stack App
+
+```plan
+# --- Current Focus ---
+currentFocus:
+  backend:
+    - create login api and issue JWT token with HTTP only cookie
+  frontend:
+    - create login page
+    - once login is succeeded, move to top page. When user have JWT token, software engineer list menu will be shown
+    - should I store JWT token somewhere? or If I add JWT token in HTTP only cookie, does not need to care?
+  integration:
+    -
+
+# --- Next Steps ---
+next:
+  backend:
+    - create logout api
+  frontend:
+    - once logout request is succeeded, move to top page, software engineer list can not be shown. Just login and signup menu
+  integration:
+    -
+
+# --- Completed Tasks ---
+completed:
+  backend:
+    - create signup api in LoginController.java
+      - user should input user_name, email and password
+      - validation rule
+        - user_name: a-z, A-Z, 0-9, more than 5 character (implemented as 6+ alphanumeric)
+        - email: valid email type
+        - password: more than 8 character, must include number and '!@?_#&'
+    - created SignupRequest DTO with validation annotations
+    - created UsersService with signup method (checks for duplicate user_name and email)
+    - added signup endpoint to LoginController with validation logic
+    - updated SecurityConfig to allow /signup endpoint
+  frontend:
+    - create signup page using tailwind and daisyUI
+      - created reusable TextInput component
+      - created reusable PasswordInput component with toggle visibility
+      - created signup page at /signup with form using Tailwind and DaisyUI
+  integration:
+    - regenerated OpenAPI client types (npm run gen-tscode)
+    - updated signup page to use generated AuthenticationApi.signupRaw with handleApiPost
+    - signup page now uses api.ts utility for consistent error handling
+```

@@ -1,8 +1,9 @@
-apis/LoginControllerApi.ts
+apis/AuthenticationApi.ts
 apis/SoftwareEngineerApi.ts
 apis/index.ts
 index.ts
 models/LoginRequest.ts
+models/SignupRequest.ts
 models/SoftwareEngineerCreateRequest.ts
 models/SoftwareEngineerResponse.ts
 models/SoftwareEngineerUpdateRequest.ts

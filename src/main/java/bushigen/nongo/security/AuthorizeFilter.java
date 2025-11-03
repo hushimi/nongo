@@ -27,13 +27,32 @@ public class AuthorizeFilter extends OncePerRequestFilter{
   ) throws jakarta.servlet.ServletException, IOException {
     // loginPathでない場合は認証を行う
     if (!pathMatcher.match(loginPath, request.getServletPath())) {
-      String authHeader = request.getHeader("Authorization");
-      if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      String token = null;
+
+      // まずCookieからJWTトークンを取得
+      jakarta.servlet.http.Cookie[] cookies = request.getCookies();
+      if (cookies != null) {
+        for (jakarta.servlet.http.Cookie cookie : cookies) {
+          if ("JWT_TOKEN".equals(cookie.getName())) {
+            token = cookie.getValue();
+            break;
+          }
+        }
+      }
+
+      // Cookieにない場合はAuthorizationヘッダーから取得（後方互換性のため）
+      if (token == null) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+          token = authHeader.substring(7);
+        }
+      }
+
+      if (token == null) {
         filterChain.doFilter(request, response);
         return;
       }
 
-      String token = authHeader.substring(7);
       try {
         DecodedJWT decoded = jwtUtil.verify(token);
         String username = decoded.getClaim("username").asString();
