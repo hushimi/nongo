@@ -1,0 +1,103 @@
+---
+alwaysApply: true
+---
+# Cursor Configuration for Spring Boot + SvelteKit Monorepo
+
+This file defines Cursor's AI behavior, model settings, and exclusion patterns
+for this full-stack project.
+
+---
+
+```config
+# === AI Model Settings ===
+model: gpt-4.1
+temperature: 0.2         # Low randomness → consistent and predictable output
+verbosity: concise        # Avoid verbose explanations; focus on usable code
+style: professional       # Clean, standard enterprise coding style
+maxTokens: 4096           # Enough for medium refactors or docs
+
+# === Context Awareness ===
+# Treat backend (Java) and frontend (SvelteKit) as a unified full-stack project.
+languageContexts:
+  - java
+  - typescript
+  - svelte
+  - html
+  - css
+  - markdown
+  - yaml
+  - json
+  - gradle
+
+# === File Exclusions (AI and Search) ===
+exclude:
+  # Frontend generated or dependency directories
+  - "src/svelte-front/node_modules/**"
+  - "src/svelte-front/.svelte-kit/**"
+  - "src/svelte-front/build/**"
+  - "src/svelte-front/dist/**"
+
+  # Backend build and generated directories
+  - "build/**"
+  - ".gradle/**"
+  - "out/**"
+  - "target/**"
+  - "bin/**"
+
+  # IDE / System directories
+  - ".idea/**"
+  - ".vscode/**"
+  - ".fleet/**"
+  - ".DS_Store"
+  - "Thumbs.db"
+
+  # Generated resources
+  - "src/main/resources/static/**"
+  - "src/main/resources/db/migration/generated/**"
+  - "src/main/java/**/generated/**"
+
+# === Preferred Output Conventions ===
+defaults:
+  code:
+    indent: 2             # Java code uses 4 spaces
+    useSemicolons: true
+  frontend:
+    indent: 2             # Svelte/TS uses 2 spaces
+    quoteStyle: "double"
+    useTrailingCommas: true
+  docs:
+    wrapTextAt: 100
+    includeCodeExamples: true
+
+# === Behavior Customization ===
+behavior:
+  autoRefactor: true      # Cursor can auto-refactor to match rules
+  preferTypeSafety: true  # For TypeScript & Java, enforce strict typing
+  preferDTOsOverEntities: true
+  generateComments: false # No excessive AI comments in generated code
+  respectRulesFile: true  # Always follow .cursor/rules.mdc
+
+# === Suggested AI Patterns ===
+patterns:
+  - match: "// @cursor: generate REST controller"
+    action: "generate a REST controller using @RestController, @RequestMapping, and DTOs"
+  - match: "// @cursor: generate Service"
+    action: "create a service class annotated with @Service using constructor injection"
+  - match: "// @cursor: generate Mapper"
+    action: "create a MapStruct @Mapper(componentModel='spring') interface"
+  - match: "// @cursor: generate Svelte component"
+    action: "create a <script lang='ts'> block, use TailwindCSS and DaisyUI classes, PascalCase component name"
+
+# === Integration Awareness ===
+integration:
+  openapi:
+    backendSpec: "http://localhost:8081/api-docs.yaml"
+    generatedClientDir: "src/svelte-front/src/lib/types"
+    generatorCommand: "npm run gen-tscode"
+  database:
+    migrationTool: "Flyway"
+    migrationDir: "src/main/resources/db/migration"
+    dialect: "MySQL"
+  frontend:
+    buildCommand: "npm run build"
+    outputDir: "src/main/resources/static"

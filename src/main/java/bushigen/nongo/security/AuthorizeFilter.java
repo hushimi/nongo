@@ -25,6 +25,7 @@ public class AuthorizeFilter extends OncePerRequestFilter{
     @NonNull HttpServletResponse response,
     @NonNull FilterChain filterChain
   ) throws jakarta.servlet.ServletException, IOException {
+    // loginPathでない場合は認証を行う
     if (!pathMatcher.match(loginPath, request.getServletPath())) {
       String authHeader = request.getHeader("Authorization");
       if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -38,7 +39,7 @@ public class AuthorizeFilter extends OncePerRequestFilter{
         String username = decoded.getClaim("username").asString();
         // Set authentication(no roles included here)
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-            username, null, new ArrayList<>()
+          username, null, new ArrayList<>()
         );
         SecurityContextHolder.getContext().setAuthentication(auth);
       } catch (Exception e) {

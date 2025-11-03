@@ -1,0 +1,51 @@
+---
+alwaysApply: true
+---
+
+# Project Rules for Spring Boot + SvelteKit Full Stack App
+
+These rules define coding conventions, architecture standards, and build workflow
+for a monorepo containing a **Spring Boot backend** and **SvelteKit frontend**.
+
+---
+
+## 🧭 General Guidelines
+> Applies to all files in this project.
+
+- Always follow **Clean Architecture** principles:
+  request -> controller -> dao -> model -> response
+- Use **DTOs** (Request/Response classes) for all controller inputs/outputs — never expose entities directly.
+- Use **constructor-based dependency injection** (no `@Autowired` fields).
+- Use **Java 21 syntax** and standard Java naming conventions.
+- In **Svelte + TypeScript**, follow ESLint + Prettier conventions and use strict typing.
+- Document all public classes/methods with brief JavaDoc or KDoc-style comments.
+
+---
+
+## ☕ Spring Boot Backend
+> Applies when editing `.java`, `.gradle`, or backend-related config files.
+
+- Backend framework: **Spring Boot 3.x or higher**.
+- Dependencies: MyBatis, Flyway, MapStruct, Lombok, JWT (`com.auth0:java-jwt`), Spring Security.
+- Use `@RestController` for JSON APIs, `@Controller` for svelte-kit views.
+- Each API endpoint must include `@Operation` for OpenAPI documentation.
+- **Flyway migration files** go under `src/main/resources/db/migration`, named as `V###__description.sql`.
+- Do **not manually edit MyBatis generator output**; use Dynamic SQL or service-layer abstraction.
+- Use **MapStruct** for all DTO ↔ Entity conversions (`@Mapper(componentModel = "spring")`).
+- JWT authentication handled via custom `OncePerRequestFilter`.
+- Throw **custom exceptions** (like `BusinessException`) instead of returning `null`.
+- Use **Spring AOP** for cross-cutting concerns (logging, transactions, etc.).
+
+---
+
+## 🎨 Frontend (SvelteKit)
+> Applies when editing under `src/svelte-front/`.
+
+- Framework: **SvelteKit 2.x** with TypeScript + TailwindCSS + DaisyUI.
+- Build command: `npm run build` → outputs to `src/main/resources/static`.
+- Use **OpenAPI-generated clients** for API calls (in `src/lib/types`), never hardcoded URLs.
+- Use component as possible as you can.
+- After backend OpenAPI changes, run:
+```bash
+npm run gen-tscode
+```

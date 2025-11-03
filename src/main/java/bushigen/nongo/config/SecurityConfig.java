@@ -22,29 +22,29 @@ public class SecurityConfig {
   private final JwtUtil jwtUtil;
 
   /**
-   * ✅ Use the new AuthenticationManager bean instead of manually creating DaoAuthenticationProvider
+   * Use the new AuthenticationManager bean instead of manually creating DaoAuthenticationProvider
    */
   @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+  AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
       return config.getAuthenticationManager();
   }
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
       .cors(c -> c.configurationSource(corsConfigurationSource()))
       .csrf(csrf -> csrf.disable())
       .authorizeHttpRequests(auth -> auth
-          .requestMatchers(
-            "/",
-            "/index.html",
-            "/favicon.ico",
-            "/_app/**",
-            "/login",
-            "/api-docs*/**",
-            "/swagger-ui/**"
-          ).permitAll()
-          .anyRequest().authenticated()
+        .requestMatchers(
+          "/",
+          "/index.html",
+          "/favicon.ico",
+          "/_app/**",
+          "/login",
+          "/api-docs*/**",
+          "/swagger-ui/**"
+        ).permitAll()
+        .anyRequest().authenticated()
       )
       .addFilterBefore(
         new AuthorizeFilter(jwtUtil),
@@ -55,12 +55,12 @@ public class SecurityConfig {
   }
 
   @Bean
-  public PasswordEncoder passwordEncoder() {
+  PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
   @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
+  CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration cors = new CorsConfiguration();
     cors.setAllowedOrigins(List.of("http://localhost:5173"));
     cors.setAllowedMethods(List.of("GET", "POST"));
