@@ -34,6 +34,7 @@ public class SecurityConfig {
     http
       .cors(c -> c.configurationSource(corsConfigurationSource()))
       .csrf(csrf -> csrf.disable())
+      .logout(logout -> logout.disable()) // Disable Spring Security's default logout handler
       .authorizeHttpRequests(auth -> auth
         .requestMatchers(
           "/",
@@ -42,6 +43,8 @@ public class SecurityConfig {
           "/_app/**",
           "/login",
           "/signup",
+          "/logout",
+          "/is-token-valid",
           "/api-docs*/**",
           "/swagger-ui/**"
         ).permitAll()

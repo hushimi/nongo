@@ -7,20 +7,18 @@ alwaysApply: false
 # --- Current Focus ---
 currentFocus:
   backend:
-    - create login api and issue JWT token with HTTP only cookie
+    -
   frontend:
-    - create login page
-    - once login is succeeded, move to top page. When user have JWT token, software engineer list menu will be shown
-    - should I store JWT token somewhere? or If I add JWT token in HTTP only cookie, does not need to care?
+    -
   integration:
     -
 
 # --- Next Steps ---
 next:
   backend:
-    - create logout api
+    -
   frontend:
-    - once logout request is succeeded, move to top page, software engineer list can not be shown. Just login and signup menu
+    -
   integration:
     -
 
@@ -37,11 +35,26 @@ completed:
     - created UsersService with signup method (checks for duplicate user_name and email)
     - added signup endpoint to LoginController with validation logic
     - updated SecurityConfig to allow /signup endpoint
+    - create login api and issue JWT token with HTTP only cookie
+    - currently, this app make request to /api/software-engineers to check if token is valid
+      - create /api/is-token-valid API(POST) in LoginController
+      - this api just return token is valid or not(don't return 401 error)
+    - create logout api
   frontend:
     - create signup page using tailwind and daisyUI
       - created reusable TextInput component
       - created reusable PasswordInput component with toggle visibility
       - created signup page at /signup with form using Tailwind and DaisyUI
+    - create login page
+    - once login is succeeded, move to top page. When user have JWT token, software engineer list menu will be shown
+    - fix auth.ts to use is-token-valid api(AuthenticationApi.ts)
+    - create common header component
+      - Left side: nongo application menu(link to top page)
+      - Right side menu:
+        - If is-token-valid result is true, display logout button
+          - create logout function using generated type script client class(AuthenticationApi.class)
+        - IF is-token-valid result is false, display SignUp and Log In button
+    - once logout request is succeeded, move to top page, software engineer list can not be shown. Just login and signup menu
   integration:
     - regenerated OpenAPI client types (npm run gen-tscode)
     - updated signup page to use generated AuthenticationApi.signupRaw with handleApiPost

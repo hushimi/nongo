@@ -57,84 +57,84 @@
 </script>
 
 <div class="min-h-screen flex items-center justify-center bg-base-200">
-    <div class="card w-full max-w-md shadow-2xl bg-base-100">
-        <div class="card-body">
-            <h2 class="card-title text-2xl justify-center mb-4">Sign Up</h2>
-            <p class="text-center text-base-content/70 mb-6">
-                Create your account to get started
-            </p>
+  <div class="card w-full max-w-md shadow-2xl bg-base-100 my-10">
+    <div class="card-body">
+      <h2 class="card-title text-2xl justify-center mb-4">Sign Up</h2>
+      <p class="text-center text-base-content/70 mb-6">
+          Create your account to get started
+      </p>
 
-            <form onsubmit={handleSubmit} class="space-y-4">
-                {#if errors.general}
-                    <div class="alert alert-error">
-                        <span>{errors.general}</span>
-                    </div>
-                {/if}
+      <form onsubmit={handleSubmit} class="space-y-4">
+        {#if errors.general}
+          <div class="alert alert-error">
+            <span>{errors.general}</span>
+          </div>
+        {/if}
 
-                <TextInput
-                    id="username"
-                    label="ユーザ名"
-                    type="text"
-                    bind:value={userName}
-                    error={errors.userName}
-                    placeholder="Enter your user name"
-                    required={true}
-                    autocomplete="off"
-                />
+        <TextInput
+          id="username"
+          label="ユーザ名"
+          type="text"
+          bind:value={userName}
+          error={errors.userName}
+          placeholder=""
+          required={true}
+          autocomplete="off"
+        />
 
-                <TextInput
-                    id="email"
-                    label="Email"
-                    type="email"
-                    bind:value={email}
-                    error={errors.email}
-                    placeholder="Enter your email"
-                    required={true}
-                    autocomplete="off"
-                />
+        <TextInput
+          id="email"
+          label="Email"
+          type="email"
+          bind:value={email}
+          error={errors.email}
+          placeholder=""
+          required={true}
+          autocomplete="off"
+        />
 
-                <PasswordInput
-                    id="password"
-                    label="パスワード"
-                    bind:value={password}
-                    error={errors.password}
-                    placeholder="Enter your password"
-                    required={true}
-                    autocomplete="new-password"
-                    displayRule={true}
-                />
+        <PasswordInput
+          id="password"
+          label="パスワード"
+          bind:value={password}
+          error={errors.password}
+          placeholder=""
+          required={true}
+          autocomplete="new-password"
+          displayRule={true}
+        />
 
-                <PasswordInput
-                    id="passwordConfirmation"
-                    label="パスワード（確認）"
-                    bind:value={passwordConfirmation}
-                    error={passwordConfirmationError}
-                    placeholder="Confirm your password"
-                    required={true}
-                    autocomplete="new-password"
-                />
+        <PasswordInput
+          id="passwordConfirmation"
+          label="パスワード（確認）"
+          bind:value={passwordConfirmation}
+          error={passwordConfirmationError}
+          placeholder=""
+          required={false}
+          autocomplete="new-password"
+        />
 
-                <div class="card-actions justify-end mt-6">
-                    <button
-                        type="submit"
-                        class="btn btn-primary w-full"
-                        disabled={isLoading || !isFormValid}
-                    >
-                        {#if isLoading}
-                            <span class="loading loading-spinner"></span>
-                            Signing up...
-                        {:else}
-                            Sign Up
-                        {/if}
-                    </button>
-                </div>
-
-                <div class="text-center mt-4">
-                    <a href="/login" class="link link-primary">
-                        Already have an account? Log in
-                    </a>
-                </div>
-            </form>
+        <div class="card-actions justify-end mt-6">
+          <button
+            type="submit"
+            class="btn btn-primary w-full"
+            disabled={isLoading || !isFormValid}
+          >
+          {#if isLoading}
+            <span class="loading loading-spinner"></span>
+            Signing up...
+          {:else}
+            Sign Up
+          {/if}
+          </button>
         </div>
+
+        <div class="text-center mt-4">
+            <a href="/login" class="link link-primary">
+                Already have an account? Log in
+            </a>
+        </div>
+      </form>
     </div>
+  </div>
 </div>

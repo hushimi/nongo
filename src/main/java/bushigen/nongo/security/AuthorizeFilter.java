@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 public class AuthorizeFilter extends OncePerRequestFilter{
   private final JwtUtil jwtUtil;
   private final String loginPath = "/login";
+  private final String logoutPath = "/logout";
+  private final String isTokenValidPath = "/is-token-valid";
   private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
   @Override
@@ -25,8 +27,12 @@ public class AuthorizeFilter extends OncePerRequestFilter{
     @NonNull HttpServletResponse response,
     @NonNull FilterChain filterChain
   ) throws jakarta.servlet.ServletException, IOException {
-    // loginPathでない場合は認証を行う
-    if (!pathMatcher.match(loginPath, request.getServletPath())) {
+    String servletPath = request.getServletPath();
+    // loginPath、logoutPath、isTokenValidPathでない場合は認証を行う
+    if (!pathMatcher.match(loginPath, servletPath) &&
+        !pathMatcher.match(logoutPath, servletPath) &&
+        !pathMatcher.match(isTokenValidPath, servletPath)
+    ) {
       String token = null;
 
       // まずCookieからJWTトークンを取得

@@ -39,6 +39,37 @@ export interface SignupOperationRequest {
 export class AuthenticationApi extends runtime.BaseAPI {
 
     /**
+     * Check if the JWT token is valid without returning 401 error
+     * Check token validity
+     */
+    async isTokenValidRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/is-token-valid`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Check if the JWT token is valid without returning 401 error
+     * Check token validity
+     */
+    async isTokenValid(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.isTokenValidRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Authenticate user and return JWT token in HTTP-only cookie
      * User login
      */
@@ -76,6 +107,37 @@ export class AuthenticationApi extends runtime.BaseAPI {
      */
     async login(requestParameters: LoginOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.loginRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Logout user by clearing JWT token cookie
+     * User logout
+     */
+    async logoutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/logout`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Logout user by clearing JWT token cookie
+     * User logout
+     */
+    async logout(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.logoutRaw(initOverrides);
         return await response.value();
     }
 

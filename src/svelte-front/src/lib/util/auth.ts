@@ -1,39 +1,39 @@
 /**
  * Authentication utility functions
  * Since JWT token is stored in HTTP-only cookie, we check authentication
- * by making a request to a protected endpoint
+ * by making a request to the is-token-valid endpoint
  */
 
+import { AuthenticationApi } from '$lib/types';
+import { apiConfig } from '$lib/config/api';
+
 let isAuthenticatedCache: boolean | null = null;
+const api = new AuthenticationApi(apiConfig);
 
 /**
- * Check if user is authenticated by attempting to access a protected endpoint
+ * Check if user is authenticated using the is-token-valid API
  * Returns true if authenticated, false otherwise
  */
 export async function checkAuthentication(): Promise<boolean> {
-    if (isAuthenticatedCache !== null) {
-        return isAuthenticatedCache;
-    }
+  if (isAuthenticatedCache !== null) {
+    return isAuthenticatedCache;
+  }
 
-    try {
-        const apiBase = import.meta.env.PUBLIC_API_BASE || 'http://localhost:8081';
-        const response = await fetch(`${apiBase}/api/software-engineers`, {
-            method: 'GET',
-            credentials: 'include', // Important: include cookies
-        });
-
-        const authenticated = response.ok;
-        isAuthenticatedCache = authenticated;
-        return authenticated;
-    } catch (error) {
-        isAuthenticatedCache = false;
-        return false;
-    }
+  try {
+    const response = await api.isTokenValidRaw({});
+    const data = await response.value();
+    const authenticated = data.valid === true;
+    isAuthenticatedCache = authenticated;
+    return authenticated;
+  } catch (error) {
+    isAuthenticatedCache = false;
+    return false;
+  }
 }
 
 /**
  * Clear authentication cache (call after logout or login)
  */
 export function clearAuthCache(): void {
-    isAuthenticatedCache = null;
+  isAuthenticatedCache = null;
 }

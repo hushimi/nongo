@@ -29,7 +29,7 @@
   <label for={id} class="label">
     <span class="label-text">{label}</span>
     {#if required}
-        <span class="label-text-alt text-error">*</span>
+      <span class="badge badge-sm badge-soft badge-error">必須</span>
     {/if}
   </label>
   <div class="relative">
@@ -61,7 +61,7 @@
       </div>
   {/if}
   {#if displayRule}
-    <p class="text-sm text-gray-500">
+    <p class="text-xs text-gray-400 mt-2">
         パスワードは8文字以上で、少なくとも1つの数字と1つの記号(!@?_#&)を含む必要があります。
     </p>
   {/if}

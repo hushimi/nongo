@@ -39,8 +39,6 @@
     onMount(getEngineers);
 </script>
 
-<a href="/" class="btn btn-accent m-3">nongo</a>
-
 <div class="container mx-auto">
     <h1 class="text-center text-2xl font-bold mb-5">Engineers</h1>
 
