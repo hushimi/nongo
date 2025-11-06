@@ -16,10 +16,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthorizeFilter extends OncePerRequestFilter{
   private final JwtUtil jwtUtil;
-  private final String loginPath = "/login";
-  private final String logoutPath = "/logout";
-  private final String isTokenValidPath = "/is-token-valid";
   private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
+  // Paths that don't require authentication (must match SecurityConfig permitAll paths)
+  private static final String[] PERMITTED_PATHS = {
+    "/",
+    "/index.html",
+    "/favicon.ico",
+    "/_app/**",
+    "/login",
+    "/signup",
+    "/logout",
+    "/is-token-valid",
+    "/api-docs*/**",
+    "/swagger-ui/**"
+  };
 
   @Override
   protected void doFilterInternal(
@@ -28,50 +39,61 @@ public class AuthorizeFilter extends OncePerRequestFilter{
     @NonNull FilterChain filterChain
   ) throws jakarta.servlet.ServletException, IOException {
     String servletPath = request.getServletPath();
-    // loginPath、logoutPath、isTokenValidPathでない場合は認証を行う
-    if (!pathMatcher.match(loginPath, servletPath) &&
-        !pathMatcher.match(logoutPath, servletPath) &&
-        !pathMatcher.match(isTokenValidPath, servletPath)
-    ) {
-      String token = null;
 
-      // まずCookieからJWTトークンを取得
-      jakarta.servlet.http.Cookie[] cookies = request.getCookies();
-      if (cookies != null) {
-        for (jakarta.servlet.http.Cookie cookie : cookies) {
-          if ("JWT_TOKEN".equals(cookie.getName())) {
-            token = cookie.getValue();
-            break;
-          }
+    // Skip authentication for permitted paths
+    boolean isPermitted = false;
+    for (String permittedPath : PERMITTED_PATHS) {
+      if (pathMatcher.match(permittedPath, servletPath)) {
+        isPermitted = true;
+        break;
+      }
+    }
+
+    // If path is permitted, skip authentication check
+    if (isPermitted) {
+      filterChain.doFilter(request, response);
+      return;
+    }
+
+    // For non-permitted paths, perform authentication
+    String token = null;
+
+    // まずCookieからJWTトークンを取得
+    jakarta.servlet.http.Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (jakarta.servlet.http.Cookie cookie : cookies) {
+        if ("JWT_TOKEN".equals(cookie.getName())) {
+          token = cookie.getValue();
+          break;
         }
       }
+    }
 
-      // Cookieにない場合はAuthorizationヘッダーから取得（後方互換性のため）
-      if (token == null) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-          token = authHeader.substring(7);
-        }
+    // Cookieにない場合はAuthorizationヘッダーから取得（後方互換性のため）
+    if (token == null) {
+      String authHeader = request.getHeader("Authorization");
+      if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        token = authHeader.substring(7);
       }
+    }
 
-      if (token == null) {
-        filterChain.doFilter(request, response);
-        return;
-      }
+    if (token == null) {
+      filterChain.doFilter(request, response);
+      return;
+    }
 
-      try {
-        DecodedJWT decoded = jwtUtil.verify(token);
-        String username = decoded.getClaim("username").asString();
-        // Set authentication(no roles included here)
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-          username, null, new ArrayList<>()
-        );
-        SecurityContextHolder.getContext().setAuthentication(auth);
-      } catch (Exception e) {
-        SecurityContextHolder.clearContext();
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        return;
-      }
+    try {
+      DecodedJWT decoded = jwtUtil.verify(token);
+      String username = decoded.getClaim("username").asString();
+      // Set authentication(no roles included here)
+      UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+        username, null, new ArrayList<>()
+      );
+      SecurityContextHolder.getContext().setAuthentication(auth);
+    } catch (Exception e) {
+      SecurityContextHolder.clearContext();
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
     }
 
     filterChain.doFilter(request, response);
