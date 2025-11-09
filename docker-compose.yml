@@ -31,6 +31,15 @@ services:
     volumes:
       - phpmyadmin_session_laravel:/sessions
 
+  mailhog:
+    image: mailhog/mailhog:latest
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - nongo-net
+
 networks:
   nongo-net:
 

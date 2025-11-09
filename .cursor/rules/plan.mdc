@@ -6,25 +6,52 @@ alwaysApply: false
 ```plan
 # --- Current Focus ---
 currentFocus:
-  backend:
-    -
-  frontend:
-    -
-  integration:
-    -
+  - Implement account verification function
+      - user sign up and create account
+      - send verification email
+      - user clicks the link inside verification email
+      - once verification email is sent, users verification column become true
+
+  BACKEND:
+    - After sign up, send verification email
+      - should install spring-boot-starter-mail
+      - use gmail for admin email(in development environment, use mail hog. Update docker-compose.yml)
+      - mail sentence can be modified via template block
+      - mail sentence will be maintained via Database
+      - Until account is verified, user can not login
+      - If account token is not valid, redirect to error page
+
+  FRONTEND:
+    - create error handling page
+      - if token is not valid, redirect to this page
+      - This page will be used for other error to
+      - error message can be flexible depends on error type
+    - Display "アカウント認証メールを送信しました" in sign up page after send mail can succeed
+
+  DATABASE
+    - Add verification column to users table(Default false). If record is already existed, set true
+    - Create an Email verification token table
+      - 1 user > 1 active token
+      - token cleanup if user is deleted
+
+  INTEGRATION:
+    - add mail hog to docker-compose.yml(for testing email function)
 
 # --- Next Steps ---
 next:
-  backend:
+  BACKEND:
     -
-  frontend:
+  FRONTEND:
     -
-  integration:
+
+  DATABASE:
+    -
+  INTEGRATION:
     -
 
 # --- Completed Tasks ---
 completed:
-  backend:
+  BACKEND:
     - create signup api in LoginController.java
       - user should input user_name, email and password
       - validation rule
@@ -40,7 +67,8 @@ completed:
       - create /api/is-token-valid API(POST) in LoginController
       - this api just return token is valid or not(don't return 401 error)
     - create logout api
-  frontend:
+
+  FRONTEND:
     - create signup page using tailwind and daisyUI
       - created reusable TextInput component
       - created reusable PasswordInput component with toggle visibility
@@ -55,7 +83,10 @@ completed:
           - create logout function using generated type script client class(AuthenticationApi.class)
         - IF is-token-valid result is false, display SignUp and Log In button
     - once logout request is succeeded, move to top page, software engineer list can not be shown. Just login and signup menu
-  integration:
+
+  DATABASE:
+
+  INTEGRATION:
     - regenerated OpenAPI client types (npm run gen-tscode)
     - updated signup page to use generated AuthenticationApi.signupRaw with handleApiPost
     - signup page now uses api.ts utility for consistent error handling
