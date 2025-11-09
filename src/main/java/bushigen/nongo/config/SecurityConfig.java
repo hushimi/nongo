@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,12 +30,19 @@ public class SecurityConfig {
       return config.getAuthenticationManager();
   }
 
+  /**
+   * CORS設定
+   * CSRF無効化
+   * 認証不要パス設定
+   * デフォルトのログアウトハンドラを無効化
+   * 認証フィルター設定
+   */
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
       .cors(c -> c.configurationSource(corsConfigurationSource()))
       .csrf(csrf -> csrf.disable())
-      .logout(logout -> logout.disable()) // Disable Spring Security's default logout handler
+      .logout(logout -> logout.disable())
       .authorizeHttpRequests(auth -> auth
         .requestMatchers(
           "/",
@@ -52,7 +60,7 @@ public class SecurityConfig {
       )
       .addFilterBefore(
         new AuthorizeFilter(jwtUtil),
-        org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class
+        UsernamePasswordAuthenticationFilter.class
       );
 
     return http.build();
@@ -63,6 +71,9 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
+  /**
+   * CORS設定
+   */
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration cors = new CorsConfiguration();

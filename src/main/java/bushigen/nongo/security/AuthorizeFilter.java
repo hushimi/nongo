@@ -2,6 +2,7 @@ package bushigen.nongo.security;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import jakarta.servlet.http.Cookie;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,6 +10,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,7 @@ public class AuthorizeFilter extends OncePerRequestFilter{
   private final JwtUtil jwtUtil;
   private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-  // Paths that don't require authentication (must match SecurityConfig permitAll paths)
+  // Authentication不要パス
   private static final String[] PERMITTED_PATHS = {
     "/",
     "/index.html",
@@ -34,13 +36,13 @@ public class AuthorizeFilter extends OncePerRequestFilter{
 
   @Override
   protected void doFilterInternal(
-    @NonNull HttpServletRequest request,
-    @NonNull HttpServletResponse response,
-    @NonNull FilterChain filterChain
-  ) throws jakarta.servlet.ServletException, IOException {
+      @NonNull HttpServletRequest request,
+      @NonNull HttpServletResponse response,
+      @NonNull FilterChain filterChain
+  ) throws ServletException, IOException {
     String servletPath = request.getServletPath();
 
-    // Skip authentication for permitted paths
+    // 認証不要パスの場合は認証をスキップ
     boolean isPermitted = false;
     for (String permittedPath : PERMITTED_PATHS) {
       if (pathMatcher.match(permittedPath, servletPath)) {
@@ -49,19 +51,18 @@ public class AuthorizeFilter extends OncePerRequestFilter{
       }
     }
 
-    // If path is permitted, skip authentication check
+    // 認証不要パス以外の場合は認証を実行
     if (isPermitted) {
       filterChain.doFilter(request, response);
       return;
     }
 
-    // For non-permitted paths, perform authentication
     String token = null;
 
     // まずCookieからJWTトークンを取得
-    jakarta.servlet.http.Cookie[] cookies = request.getCookies();
+    Cookie[] cookies = request.getCookies();
     if (cookies != null) {
-      for (jakarta.servlet.http.Cookie cookie : cookies) {
+      for (Cookie cookie : cookies) {
         if ("JWT_TOKEN".equals(cookie.getName())) {
           token = cookie.getValue();
           break;
@@ -69,7 +70,7 @@ public class AuthorizeFilter extends OncePerRequestFilter{
       }
     }
 
-    // Cookieにない場合はAuthorizationヘッダーから取得（後方互換性のため）
+    // Cookieにない場合はAuthorizationヘッダーから取得
     if (token == null) {
       String authHeader = request.getHeader("Authorization");
       if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -85,7 +86,7 @@ public class AuthorizeFilter extends OncePerRequestFilter{
     try {
       DecodedJWT decoded = jwtUtil.verify(token);
       String username = decoded.getClaim("username").asString();
-      // Set authentication(no roles included here)
+      // 認証を設定(ロールは含まれない)
       UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
         username, null, new ArrayList<>()
       );

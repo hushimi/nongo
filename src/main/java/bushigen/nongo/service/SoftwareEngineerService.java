@@ -2,6 +2,7 @@ package bushigen.nongo.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import bushigen.nongo.dao.generated.SoftwareEngineerMapper;
 import bushigen.nongo.model.SoftwareEngineer;
 import bushigen.nongo.model.SoftwareEngineerExample;
@@ -27,6 +28,7 @@ public class SoftwareEngineerService {
     /**
      * 新規レコード作成
      */
+    @Transactional
     public void insertSoftwareEngineer(SoftwareEngineer softwareEngineer)
     {
         mapper.insertSelective(softwareEngineer);
@@ -35,6 +37,7 @@ public class SoftwareEngineerService {
     /**
      * データ更新
      */
+    @Transactional
     public void updateSoftwareEngineer(SoftwareEngineer engineer)
     {
         mapper.updateByPrimaryKeySelective(engineer);
@@ -61,6 +64,7 @@ public class SoftwareEngineerService {
     /**
      * ID指定で削除
      */
+    @Transactional
     public void deleteSoftwareEngineerById(Long id) {
         mapper.deleteByPrimaryKey(id);
     }

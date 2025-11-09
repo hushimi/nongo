@@ -1,9 +1,11 @@
 package bushigen.nongo.controller;
 
 import jakarta.validation.Valid;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,9 +42,11 @@ public class LoginController {
     description = "Authenticate user and return JWT token in HTTP-only cookie"
   )
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody LoginRequest request, jakarta.servlet.http.HttpServletResponse response) {
+  public ResponseEntity<?> login(
+      @RequestBody LoginRequest request,
+      @Valid HttpServletResponse response
+  ) {
     try {
-      log.info(request.toString());
       // 認証実行
       authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
@@ -54,7 +58,7 @@ public class LoginController {
       String token = jwtUtil.createToken(request.user_name());
 
       // JWTトークンをHTTP-only Cookieに設定
-      jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("JWT_TOKEN", token);
+      Cookie cookie = new Cookie("JWT_TOKEN", token);
       cookie.setHttpOnly(true);
       cookie.setSecure(false); // HTTPS環境ではtrueに設定
       cookie.setPath("/");
@@ -76,14 +80,14 @@ public class LoginController {
     description = "Check if the JWT token is valid without returning 401 error"
   )
   @PostMapping("/is-token-valid")
-  public ResponseEntity<?> isTokenValid(jakarta.servlet.http.HttpServletRequest request) {
+  public ResponseEntity<?> isTokenValid(HttpServletRequest request) {
     try {
       String token = null;
 
       // CookieからJWTトークンを取得
-      jakarta.servlet.http.Cookie[] cookies = request.getCookies();
+      Cookie[] cookies = request.getCookies();
       if (cookies != null) {
-        for (jakarta.servlet.http.Cookie cookie : cookies) {
+        for (Cookie cookie : cookies) {
           if ("JWT_TOKEN".equals(cookie.getName())) {
             token = cookie.getValue();
             break;
@@ -137,13 +141,13 @@ public class LoginController {
     description = "Logout user by clearing JWT token cookie"
   )
   @PostMapping("/logout")
-  public ResponseEntity<?> logout(jakarta.servlet.http.HttpServletResponse response) {
+  public ResponseEntity<?> logout(HttpServletResponse response) {
     // JWTトークンCookieを削除
-    jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("JWT_TOKEN", "");
+    Cookie cookie = new Cookie("JWT_TOKEN", "");
     cookie.setHttpOnly(true);
     cookie.setSecure(false);
     cookie.setPath("/");
-    cookie.setMaxAge(0); // 即座に削除
+    cookie.setMaxAge(0);
     response.addCookie(cookie);
 
     return ResponseEntity.ok().body("Logout successful");

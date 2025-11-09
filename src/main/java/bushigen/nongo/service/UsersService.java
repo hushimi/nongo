@@ -3,6 +3,7 @@ package bushigen.nongo.service;
 import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import bushigen.nongo.dao.generated.UsersMapper;
 import bushigen.nongo.global.BusinessException;
 import bushigen.nongo.model.Users;
@@ -30,6 +31,7 @@ public class UsersService {
   /**
    * 新規ユーザー登録
    */
+  @Transactional
   public void signup(String userName, String email, String password) {
     // ユーザ名がすでに存在するかチェック
     UsersExample example = new UsersExample();

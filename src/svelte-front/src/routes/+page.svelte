@@ -1,13 +1,23 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { afterNavigate } from '$app/navigation';
   import { checkAuthentication } from '$lib/util/auth';
 
   let isAuthenticated = $state(false);
   let isLoading = $state(true);
 
-  onMount(async () => {
+  async function updateAuthStatus() {
+    isLoading = true;
     isAuthenticated = await checkAuthentication();
     isLoading = false;
+  }
+
+  onMount(async () => {
+    await updateAuthStatus();
+  });
+
+  afterNavigate(async () => {
+    await updateAuthStatus();
   });
 </script>
 
