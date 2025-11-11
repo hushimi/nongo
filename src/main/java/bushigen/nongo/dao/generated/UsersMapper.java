@@ -57,10 +57,10 @@ public interface UsersMapper {
     @Insert({
         "insert into users (user_name, email, ",
         "password, created_at, ",
-        "updated_at)",
+        "updated_at, verified)",
         "values (#{userName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, ",
         "#{password,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, ",
-        "#{updatedAt,jdbcType=TIMESTAMP})"
+        "#{updatedAt,jdbcType=TIMESTAMP}, #{verified,jdbcType=BIT})"
     })
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="id", before=false, resultType=Long.class)
     int insert(Users row);
@@ -88,7 +88,8 @@ public interface UsersMapper {
         @Result(column="email", property="email", jdbcType=JdbcType.VARCHAR),
         @Result(column="password", property="password", jdbcType=JdbcType.VARCHAR),
         @Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
+        @Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="verified", property="verified", jdbcType=JdbcType.BIT)
     })
     List<Users> selectByExample(UsersExample example);
 
@@ -100,7 +101,7 @@ public interface UsersMapper {
      */
     @Select({
         "select",
-        "id, user_name, email, password, created_at, updated_at",
+        "id, user_name, email, password, created_at, updated_at, verified",
         "from users",
         "where id = #{id,jdbcType=BIGINT}"
     })
@@ -110,7 +111,8 @@ public interface UsersMapper {
         @Result(column="email", property="email", jdbcType=JdbcType.VARCHAR),
         @Result(column="password", property="password", jdbcType=JdbcType.VARCHAR),
         @Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
+        @Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="verified", property="verified", jdbcType=JdbcType.BIT)
     })
     Users selectByPrimaryKey(Long id);
 
@@ -153,7 +155,8 @@ public interface UsersMapper {
           "email = #{email,jdbcType=VARCHAR},",
           "password = #{password,jdbcType=VARCHAR},",
           "created_at = #{createdAt,jdbcType=TIMESTAMP},",
-          "updated_at = #{updatedAt,jdbcType=TIMESTAMP}",
+          "updated_at = #{updatedAt,jdbcType=TIMESTAMP},",
+          "verified = #{verified,jdbcType=BIT}",
         "where id = #{id,jdbcType=BIGINT}"
     })
     int updateByPrimaryKey(Users row);

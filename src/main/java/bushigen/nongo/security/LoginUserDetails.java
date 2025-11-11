@@ -28,5 +28,8 @@ public class LoginUserDetails implements UserDetails{
   @Override public boolean isAccountNonExpired(){ return true; }
   @Override public boolean isAccountNonLocked(){ return true; }
   @Override public boolean isCredentialsNonExpired(){ return true; }
-  @Override public boolean isEnabled(){ return true; }
+  @Override public boolean isEnabled(){
+    // アカウントが認証済みの場合のみ有効
+    return user.getVerified() != null && user.getVerified();
+  }
 }

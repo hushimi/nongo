@@ -30,22 +30,29 @@ public class AuthorizeFilter extends OncePerRequestFilter{
     "/signup",
     "/logout",
     "/is-token-valid",
+    "/verify-email",
     "/api-docs*/**",
     "/swagger-ui/**"
   };
 
   @Override
   protected void doFilterInternal(
-      @NonNull HttpServletRequest request,
-      @NonNull HttpServletResponse response,
-      @NonNull FilterChain filterChain
+      @NonNull
+      HttpServletRequest request,
+      @NonNull
+      HttpServletResponse response,
+      @NonNull
+      FilterChain filterChain
   ) throws ServletException, IOException {
     String servletPath = request.getServletPath();
+    if (servletPath == null) {
+      servletPath = "";
+    }
 
     // 認証不要パスの場合は認証をスキップ
     boolean isPermitted = false;
     for (String permittedPath : PERMITTED_PATHS) {
-      if (pathMatcher.match(permittedPath, servletPath)) {
+      if (permittedPath != null && pathMatcher.match(permittedPath, servletPath)) {
         isPermitted = true;
         break;
       }

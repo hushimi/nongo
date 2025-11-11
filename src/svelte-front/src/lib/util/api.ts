@@ -2,9 +2,6 @@
  * Generic helper for safely calling OpenAPI-generated API methods.
  * Keeps error handling and success logic consistent.
  */
-import { ResponseError } from '$lib/types';
-type SuccessCallback<T> = (data: T) => void | Promise<void>;
-type ErrorCallback = (error: unknown) => void | Promise<void>;
 
 /**
  * GETリクエスト用
@@ -19,7 +16,7 @@ export async function handleApiGet<TReq, TRes>(
     try {
         const result = await apiMethod(requestData);
         await onSuccess(result);
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error("API Error caught in handleApiGet:", err);
 
         if (!onError) return;
@@ -28,10 +25,17 @@ export async function handleApiGet<TReq, TRes>(
         const response = err?.response as Response | undefined;
         if (response instanceof Response) {
             try {
-                const data = await response.json();
-                await onError(data);
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const data = await response.json();
+                    await onError(data);
+                } else {
+                    // Handle plain text responses (e.g., 403 errors)
+                    const text = await response.text();
+                    await onError({ general: text || `サーバーエラー (${response.status})` });
+                }
             } catch {
-                await onError({ general: "サーバーエラーの解析に失敗しました。" });
+                await onError({ general: `サーバーエラー (${response.status})` });
             }
             return;
         }
@@ -59,7 +63,7 @@ export async function handleApiPost<TReq, TRes>(
     try {
         const result = await apiMethod(requestData);
         await onSuccess(result);
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error("API Error caught in handleApiPost:", err);
 
         if (!onError) return;
@@ -68,10 +72,17 @@ export async function handleApiPost<TReq, TRes>(
         const response = err?.response as Response | undefined;
         if (response instanceof Response) {
             try {
-                const data = await response.json();
-                await onError(data);
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const data = await response.json();
+                    await onError(data);
+                } else {
+                    // Handle plain text responses (e.g., 403 errors)
+                    const text = await response.text();
+                    await onError({ general: text || `サーバーエラー (${response.status})` });
+                }
             } catch {
-                await onError({ general: "サーバーエラーの解析に失敗しました。" });
+                await onError({ general: `サーバーエラー (${response.status})` });
             }
             return;
         }

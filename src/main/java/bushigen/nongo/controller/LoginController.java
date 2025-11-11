@@ -14,6 +14,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import bushigen.nongo.dto.request.LoginRequest;
 import bushigen.nongo.dto.request.SignupRequest;
+import bushigen.nongo.global.BusinessException;
+import bushigen.nongo.model.Users;
 import bushigen.nongo.security.JwtUtil;
 import bushigen.nongo.service.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,10 +45,23 @@ public class LoginController {
   )
   @PostMapping("/login")
   public ResponseEntity<?> login(
-      @RequestBody LoginRequest request,
-      @Valid HttpServletResponse response
+      @RequestBody
+      LoginRequest request,
+      @Valid
+      HttpServletResponse response
   ) {
     try {
+      // アカウントがverifiedかチェック
+      try {
+        Users user = usersService.getUserByUserName(request.user_name());
+        if (user.getVerified() == null || !user.getVerified()) {
+          return ResponseEntity.status(403).body("アカウントが認証されていません。メール認証を完了してください。");
+        }
+      } catch (BusinessException e) {
+        // ユーザーが見つからない場合は認証を試行（認証マネージャーが適切に処理）
+        log.debug("User not found during verification check: {}", request.user_name());
+      }
+
       // 認証実行
       authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
@@ -68,6 +83,9 @@ public class LoginController {
       return ResponseEntity.ok().body("Login successful");
     } catch (AuthenticationException e) {
       return ResponseEntity.status(401).body("Unauthorized");
+    } catch (Exception e) {
+      log.error("Login error", e);
+      return ResponseEntity.status(500).body("Internal server error");
     }
   }
 
@@ -123,13 +141,38 @@ public class LoginController {
     description = "Register a new user account"
   )
   @PostMapping("/signup")
-  public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
+  public ResponseEntity<?> signup(
+      @Valid
+      @RequestBody
+      SignupRequest request
+  ) {
     usersService.signup(
       request.user_name(),
       request.email(),
       request.password()
     );
     return ResponseEntity.ok().body("User registered successfully");
+  }
+
+  /**
+   * メール認証API
+   * トークンでアカウントを認証
+   */
+  @Operation(
+    summary = "Verify email",
+    description = "Verify user account using email verification token"
+  )
+  @GetMapping("/verify-email")
+  public ResponseEntity<?> verifyEmail(@RequestParam String token) {
+    try {
+      usersService.verifyEmail(token);
+      return ResponseEntity.ok().body("アカウントが認証されました");
+    } catch (BusinessException e) {
+      return ResponseEntity.status(400).body(e.getMessage());
+    } catch (Exception e) {
+      log.error("Email verification error", e);
+      return ResponseEntity.status(500).body("Internal server error");
+    }
   }
 
   /**

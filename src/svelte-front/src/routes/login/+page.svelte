@@ -6,18 +6,17 @@
   import { clearAuthCache } from '$lib/util/auth';
   import TextInput from '$lib/components/TextInput.svelte';
   import PasswordInput from '$lib/components/PasswordInput.svelte';
-
   const api = new AuthenticationApi(apiConfig);
   let userName = $state('');
   let password = $state('');
   let errors = $state<Record<string, string>>({});
   let isLoading = $state(false);
 
+  // Get data from load function
+  let { data }: { data: { verified: boolean } } = $props();
+
   // Check if all fields are filled
-  let isFormValid = $derived(
-    userName.trim() !== '' &&
-    password.trim() !== ''
-  );
+  let isFormValid = $derived(userName.trim() !== '' && password.trim() !== '');
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
@@ -36,7 +35,7 @@
         clearAuthCache();
         goto('/');
       },
-      async (err) => {
+      async err => {
         errors = err as Record<string, string>;
       }
     );
@@ -49,9 +48,26 @@
   <div class="card w-full max-w-md shadow-2xl bg-base-100 my-10 flex-grow-1">
     <div class="card-body">
       <h2 class="card-title text-2xl justify-center mb-4">Log In</h2>
-      <p class="text-center text-base-content/70 mb-6">
-        Sign in to your account
-      </p>
+      <p class="text-center text-base-content/70 mb-6">Sign in to your account</p>
+
+      {#if data.verified}
+        <div class="alert alert-success">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="stroke-current shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>アカウントが認証されました。ログインしてください。</span>
+        </div>
+      {/if}
 
       <form onsubmit={handleSubmit} class="space-y-4">
         {#if errors.general}
@@ -82,11 +98,7 @@
         />
 
         <div class="card-actions justify-end mt-6">
-          <button
-            type="submit"
-            class="btn btn-primary w-full"
-            disabled={isLoading || !isFormValid}
-          >
+          <button type="submit" class="btn btn-primary w-full" disabled={isLoading || !isFormValid}>
             {#if isLoading}
               <span class="loading loading-spinner"></span>
               Logging in...
@@ -97,9 +109,7 @@
         </div>
 
         <div class="text-center mt-4">
-          <a href="/signup" class="link link-primary">
-            Don't have an account? Sign up
-          </a>
+          <a href="/signup" class="link link-primary"> Don't have an account? Sign up </a>
         </div>
       </form>
     </div>

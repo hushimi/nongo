@@ -53,6 +53,7 @@ public class SecurityConfig {
           "/signup",
           "/logout",
           "/is-token-valid",
+          "/verify-email",
           "/api-docs*/**",
           "/swagger-ui/**"
         ).permitAll()

@@ -14,22 +14,22 @@ import bushigen.nongo.model.SoftwareEngineer;
 
 @Mapper(componentModel = "spring")
 public interface SoftwareEngineerObjMapper {
-    SoftwareEngineerObjMapper INSTANCE = Mappers.getMapper(SoftwareEngineerObjMapper.class);
+  SoftwareEngineerObjMapper INSTANCE = Mappers.getMapper(SoftwareEngineerObjMapper.class);
 
-    @Mappings({
-        @Mapping(target = "id", ignore = true),
-        @Mapping(target = "createdAt", ignore = true),
-        @Mapping(target = "updatedAt", ignore = true)
-    })
-    SoftwareEngineer toModel(SoftwareEngineerCreateRequest request);
+  @Mappings({
+    @Mapping(target = "id", ignore = true),
+    @Mapping(target = "createdAt", ignore = true),
+    @Mapping(target = "updatedAt", ignore = true)
+  })
+  SoftwareEngineer toModel(SoftwareEngineerCreateRequest request);
 
-    @Mappings({
-        @Mapping(target = "createdAt", ignore = true),
-        @Mapping(target = "updatedAt", ignore = true)
-    })
-    SoftwareEngineer toModel(SoftwareEngineerUpdateRequest request);
+  @Mappings({
+    @Mapping(target = "createdAt", ignore = true),
+    @Mapping(target = "updatedAt", ignore = true)
+  })
+  SoftwareEngineer toModel(SoftwareEngineerUpdateRequest request);
 
-    SoftwareEngineerResponse toResponse(SoftwareEngineer entity);
+  SoftwareEngineerResponse toResponse(SoftwareEngineer entity);
 
-    List<SoftwareEngineerResponse> toResponseList(List<SoftwareEngineer> entities);
+  List<SoftwareEngineerResponse> toResponseList(List<SoftwareEngineer> entities);
 }

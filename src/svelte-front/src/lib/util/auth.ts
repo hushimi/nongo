@@ -25,7 +25,7 @@ export async function checkAuthentication(): Promise<boolean> {
     const authenticated = data.valid === true;
     isAuthenticatedCache = authenticated;
     return authenticated;
-  } catch (error) {
+  } catch {
     isAuthenticatedCache = false;
     return false;
   }
