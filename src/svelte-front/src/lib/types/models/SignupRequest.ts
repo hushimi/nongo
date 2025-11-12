@@ -59,7 +59,7 @@ export function SignupRequestFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'userName': json['user_name'],
+        'userName': json['userName'],
         'email': json['email'],
         'password': json['password'],
     };
@@ -76,7 +76,7 @@ export function SignupRequestToJSONTyped(value?: SignupRequest | null, ignoreDis
 
     return {
         
-        'user_name': value['userName'],
+        'userName': value['userName'],
         'email': value['email'],
         'password': value['password'],
     };

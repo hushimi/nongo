@@ -54,6 +54,7 @@
       },
       async err => {
         errors = err as Record<string, string>;
+        console.error('Signup error:', err);
       }
     );
 
@@ -73,19 +74,17 @@
             xmlns="http://www.w3.org/2000/svg"
             class="stroke-current shrink-0 h-6 w-6"
             fill="none"
-            viewBox="0 0 24 24"
-          >
+            viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <span>アカウント認証メールを送信しました</span>
         </div>
         <div class="text-center mt-4">
-          <a href="/login" class="link link-primary"> ログインページへ </a>
+          <a href="/login" class="link link-primary">ログインページへ</a>
         </div>
       {:else}
         <form onsubmit={handleSubmit} class="space-y-4">
@@ -101,8 +100,7 @@
             error={errors.userName}
             placeholder=""
             required={true}
-            autocomplete="off"
-          />
+            autocomplete="off" />
 
           <TextInput
             id="email"
@@ -112,8 +110,7 @@
             error={errors.email}
             placeholder=""
             required={true}
-            autocomplete="off"
-          />
+            autocomplete="off" />
 
           <PasswordInput
             id="password"
@@ -123,8 +120,7 @@
             placeholder=""
             required={true}
             autocomplete="new-password"
-            displayRule={true}
-          />
+            displayRule={true} />
 
           <PasswordInput
             id="passwordConfirmation"
@@ -133,15 +129,13 @@
             error={passwordConfirmationError}
             placeholder=""
             required={false}
-            autocomplete="new-password"
-          />
+            autocomplete="new-password" />
 
           <div class="card-actions justify-end mt-6">
             <button
               type="submit"
               class="btn btn-primary w-full"
-              disabled={isLoading || !isFormValid}
-            >
+              disabled={isLoading || !isFormValid}>
               {#if isLoading}
                 <span class="loading loading-spinner"></span>
                 Signing up...
@@ -152,7 +146,7 @@
           </div>
 
           <div class="text-center mt-4">
-            <a href="/login" class="link link-primary"> Already have an account? Log in </a>
+            <a href="/login" class="link link-primary">Already have an account? Log in</a>
           </div>
         </form>
       {/if}

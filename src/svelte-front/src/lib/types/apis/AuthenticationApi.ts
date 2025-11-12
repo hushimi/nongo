@@ -33,6 +33,10 @@ export interface SignupOperationRequest {
     signupRequest: SignupRequest;
 }
 
+export interface VerifyEmailRequest {
+    token: string;
+}
+
 /**
  * 
  */
@@ -48,7 +52,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
 
-        let urlPath = `/is-token-valid`;
+        let urlPath = `/api/is-token-valid`;
 
         const response = await this.request({
             path: urlPath,
@@ -88,7 +92,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
 
-        let urlPath = `/login`;
+        let urlPath = `/api/login`;
 
         const response = await this.request({
             path: urlPath,
@@ -120,7 +124,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
 
-        let urlPath = `/logout`;
+        let urlPath = `/api/logout`;
 
         const response = await this.request({
             path: urlPath,
@@ -160,7 +164,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
 
-        let urlPath = `/signup`;
+        let urlPath = `/api/signup`;
 
         const response = await this.request({
             path: urlPath,
@@ -179,6 +183,48 @@ export class AuthenticationApi extends runtime.BaseAPI {
      */
     async signup(requestParameters: SignupOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.signupRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Verify user account using email verification token
+     * Verify email
+     */
+    async verifyEmailRaw(requestParameters: VerifyEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['token'] == null) {
+            throw new runtime.RequiredError(
+                'token',
+                'Required parameter "token" was null or undefined when calling verifyEmail().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['token'] != null) {
+            queryParameters['token'] = requestParameters['token'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/api/verify-email`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Verify user account using email verification token
+     * Verify email
+     */
+    async verifyEmail(requestParameters: VerifyEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.verifyEmailRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

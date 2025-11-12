@@ -8,5 +8,7 @@
   "arrowParens": "avoid",
   "bracketSpacing": true,
   "endOfLine": "lf",
-  "svelteIndentScriptAndStyle": true
+  "svelteIndentScriptAndStyle": true,
+  "bracketSameLine": true,
+  "htmlWhitespaceSensitivity": "ignore"
 }

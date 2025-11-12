@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @Slf4j
 @RestController
+@RequestMapping("/api")
 @CrossOrigin
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "User authentication and registration API")
@@ -36,41 +37,72 @@ public class LoginController {
   private final UsersService usersService;
 
   /**
+   * サインアップAPI
+   */
+  @Operation(summary = "User signup", description = "Register a new user account")
+  @PostMapping("/signup")
+  public ResponseEntity<?> signup(
+      @Valid @RequestBody
+      SignupRequest request
+  ) {
+    usersService.signup(
+      request.userName(),
+      request.email(),
+      request.password()
+    );
+    return ResponseEntity.ok().body("User registered successfully");
+  }
+
+  /**
+   * メール認証API
+   * トークンでアカウントを認証
+   * フロントエンドがリダイレクトを処理するため、成功/失敗のステータスコードを返す
+   */
+  @Operation(summary = "Verify email", description = "Verify user account using email verification token")
+  @GetMapping("/verify-email")
+  public ResponseEntity<?> verifyEmail(@RequestParam String token) {
+    try {
+      usersService.verifyEmail(token);
+      // 認証成功 - 200 OK を返す（フロントエンドがログインページへリダイレクト）
+      return ResponseEntity.ok().body("アカウントが認証されました");
+    } catch (BusinessException e) {
+      // 認証失敗 - 400 Bad Request を返す（フロントエンドがエラーページへリダイレクト）
+      return ResponseEntity.status(400).body(e.getMessage());
+    } catch (Exception e) {
+      log.error("Email verification error", e);
+      // システムエラー - 500 Internal Server Error を返す
+      return ResponseEntity.status(500).body("認証処理中にエラーが発生しました");
+    }
+  }
+
+  /**
    * ログインAPI
    * JWTトークンをHTTP-only Cookieに設定
    */
-  @Operation(
-    summary = "User login",
-    description = "Authenticate user and return JWT token in HTTP-only cookie"
-  )
+  @Operation(summary = "User login", description = "Authenticate user and return JWT token in HTTP-only cookie")
   @PostMapping("/login")
   public ResponseEntity<?> login(
-      @RequestBody
-      LoginRequest request,
-      @Valid
-      HttpServletResponse response
-  ) {
+      @RequestBody LoginRequest request,
+      @Valid HttpServletResponse response) {
     try {
       // アカウントがverifiedかチェック
       try {
-        Users user = usersService.getUserByUserName(request.user_name());
+        Users user = usersService.getUserByUserName(request.userName());
         if (user.getVerified() == null || !user.getVerified()) {
           return ResponseEntity.status(403).body("アカウントが認証されていません。メール認証を完了してください。");
         }
       } catch (BusinessException e) {
         // ユーザーが見つからない場合は認証を試行（認証マネージャーが適切に処理）
-        log.debug("User not found during verification check: {}", request.user_name());
+        log.debug("User not found during verification check: {}", request.userName());
       }
 
       // 認証実行
       authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(
-          request.user_name(), request.password()
-        )
-      );
+          new UsernamePasswordAuthenticationToken(
+              request.userName(), request.password()));
 
       // ユーザ名を元にJWTトークン作成
-      String token = jwtUtil.createToken(request.user_name());
+      String token = jwtUtil.createToken(request.userName());
 
       // JWTトークンをHTTP-only Cookieに設定
       Cookie cookie = new Cookie("JWT_TOKEN", token);
@@ -93,10 +125,7 @@ public class LoginController {
    * トークン有効性チェックAPI
    * トークンが有効かどうかを返す（401エラーは返さない）
    */
-  @Operation(
-    summary = "Check token validity",
-    description = "Check if the JWT token is valid without returning 401 error"
-  )
+  @Operation(summary = "Check token validity", description = "Check if the JWT token is valid without returning 401 error")
   @PostMapping("/is-token-valid")
   public ResponseEntity<?> isTokenValid(HttpServletRequest request) {
     try {
@@ -134,55 +163,10 @@ public class LoginController {
   }
 
   /**
-   * サインアップAPI
-   */
-  @Operation(
-    summary = "User signup",
-    description = "Register a new user account"
-  )
-  @PostMapping("/signup")
-  public ResponseEntity<?> signup(
-      @Valid
-      @RequestBody
-      SignupRequest request
-  ) {
-    usersService.signup(
-      request.user_name(),
-      request.email(),
-      request.password()
-    );
-    return ResponseEntity.ok().body("User registered successfully");
-  }
-
-  /**
-   * メール認証API
-   * トークンでアカウントを認証
-   */
-  @Operation(
-    summary = "Verify email",
-    description = "Verify user account using email verification token"
-  )
-  @GetMapping("/verify-email")
-  public ResponseEntity<?> verifyEmail(@RequestParam String token) {
-    try {
-      usersService.verifyEmail(token);
-      return ResponseEntity.ok().body("アカウントが認証されました");
-    } catch (BusinessException e) {
-      return ResponseEntity.status(400).body(e.getMessage());
-    } catch (Exception e) {
-      log.error("Email verification error", e);
-      return ResponseEntity.status(500).body("Internal server error");
-    }
-  }
-
-  /**
    * ログアウトAPI
    * JWTトークンCookieを削除
    */
-  @Operation(
-    summary = "User logout",
-    description = "Logout user by clearing JWT token cookie"
-  )
+  @Operation(summary = "User logout", description = "Logout user by clearing JWT token cookie")
   @PostMapping("/logout")
   public ResponseEntity<?> logout(HttpServletResponse response) {
     // JWTトークンCookieを削除

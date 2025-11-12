@@ -49,7 +49,6 @@ export async function handleApiGet<TReq, TRes>(
     }
 }
 
-
 /**
  * POSTリクエスト用
  * OpenAPI-CLIで作成したクラスのメソッドを実行

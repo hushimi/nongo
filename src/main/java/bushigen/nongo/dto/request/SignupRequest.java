@@ -12,7 +12,7 @@ public record SignupRequest(
   @Pattern(regexp = "^[a-zA-Z0-9]{6,}$",
     message = "ユーザ名は6文字以上の英数字で入力してください"
   )
-  String user_name,
+  String userName,
 
   @Schema(description = "Email address")
   @NotBlank(message = "メールアドレスは必須です")

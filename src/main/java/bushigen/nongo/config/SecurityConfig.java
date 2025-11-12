@@ -49,13 +49,29 @@ public class SecurityConfig {
           "/index.html",
           "/favicon.ico",
           "/_app/**",
+          "/vite/**",
+          "/assets/**",
           "/login",
+          "/login/**",
           "/signup",
-          "/logout",
-          "/is-token-valid",
+          "/signup/**",
+          "/error",
+          "/error/**",
           "/verify-email",
+          "/verify-email/**",
+          "/api/signup",
+          "/api/login",
+          "/api/logout",
+          "/api/is-token-valid",
+          "/api/verify-email",
           "/api-docs*/**",
-          "/swagger-ui/**"
+          "/swagger-ui/**",
+          "/*.js",
+          "/*.css",
+          "/*.png",
+          "/*.jpg",
+          "/*.svg",
+          "/*.ico"
         ).permitAll()
         .anyRequest().authenticated()
       )

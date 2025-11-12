@@ -10,7 +10,7 @@ export const load: PageLoad = async ({ url, fetch }) => {
 
   try {
     // 認証API呼び出し
-    const apiUrl = `/verify-email?token=${encodeURIComponent(token)}`;
+    const apiUrl = `/api/verify-email?token=${encodeURIComponent(token)}`;
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
@@ -27,11 +27,13 @@ export const load: PageLoad = async ({ url, fetch }) => {
       throw redirect(302, '/error?type=verification&message=' + encodeURIComponent(errorMessage || '認証に失敗しました'));
     }
   } catch (err) {
-    // リダイレクトエラーの場合は再スロー
-    if (err instanceof Response && err.status >= 300 && err.status < 400) {
+    // SvelteKit の redirect は特殊なオブジェクトなので、そのまま再スロー
+    // redirect() が投げるエラーには特定のシンボルが含まれている
+    if (err && typeof err === 'object' && 'status' in err && 'location' in err) {
       throw err;
     }
-    // それ以外のエラーの場合はエラーページへリダイレクト
+    // それ以外のエラー（ネットワークエラーなど）の場合はエラーページへリダイレクト
+    console.error('Verification error:', err);
     throw redirect(302, '/error?type=verification&message=' + encodeURIComponent('認証処理中にエラーが発生しました'));
   }
 };

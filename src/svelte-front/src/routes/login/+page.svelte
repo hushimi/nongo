@@ -45,7 +45,7 @@
 </script>
 
 <div class="flex items-center justify-center bg-base-200">
-  <div class="card w-full max-w-md shadow-2xl bg-base-100 my-10 flex-grow-1">
+  <div class="card w-full max-w-md shadow-2xl bg-base-100 my-10 grow">
     <div class="card-body">
       <h2 class="card-title text-2xl justify-center mb-4">Log In</h2>
       <p class="text-center text-base-content/70 mb-6">Sign in to your account</p>
@@ -56,14 +56,12 @@
             xmlns="http://www.w3.org/2000/svg"
             class="stroke-current shrink-0 h-6 w-6"
             fill="none"
-            viewBox="0 0 24 24"
-          >
+            viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <span>アカウントが認証されました。ログインしてください。</span>
         </div>
@@ -84,8 +82,7 @@
           error={errors.userName}
           placeholder=""
           required={false}
-          autocomplete="off"
-        />
+          autocomplete="off" />
 
         <PasswordInput
           id="password"
@@ -94,8 +91,7 @@
           error={errors.password}
           placeholder=""
           required={false}
-          autocomplete="off"
-        />
+          autocomplete="off" />
 
         <div class="card-actions justify-end mt-6">
           <button type="submit" class="btn btn-primary w-full" disabled={isLoading || !isFormValid}>
@@ -109,7 +105,7 @@
         </div>
 
         <div class="text-center mt-4">
-          <a href="/signup" class="link link-primary"> Don't have an account? Sign up </a>
+          <a href="/signup" class="link link-primary">Don't have an account? Sign up</a>
         </div>
       </form>
     </div>

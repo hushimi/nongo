@@ -50,7 +50,7 @@ export function LoginRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'userName': json['user_name'] == null ? undefined : json['user_name'],
+        'userName': json['userName'] == null ? undefined : json['userName'],
         'password': json['password'] == null ? undefined : json['password'],
     };
 }
@@ -66,7 +66,7 @@ export function LoginRequestToJSONTyped(value?: LoginRequest | null, ignoreDiscr
 
     return {
         
-        'user_name': value['userName'],
+        'userName': value['userName'],
         'password': value['password'],
     };
 }
