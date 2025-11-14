@@ -46,7 +46,7 @@
       type="button"
       class="absolute right-2 top-1 btn btn-ghost btn-sm btn-circle"
       onclick={() => showPassword = !showPassword}
-      aria-label={showPassword ? "Hide password" : "Show password"}
+      aria-label={showPassword ? "パスワードを非表示" : "パスワードを表示"}
     >
         {#if showPassword}
             <FontAwesome icon={faEyeSlash} />

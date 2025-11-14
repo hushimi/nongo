@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
 
-  // Get data from load function
+  // load関数からデータを取得
   let { data }: { data: { message: string; type: string } } = $props();
 </script>
 

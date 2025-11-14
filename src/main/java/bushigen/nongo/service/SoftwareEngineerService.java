@@ -8,9 +8,9 @@ import bushigen.nongo.model.SoftwareEngineer;
 import bushigen.nongo.model.SoftwareEngineerExample;
 
 /**
- * Service class for managing SoftwareEngineer entities.
- * This service provides business logic for CRUD operations on software engineers,
- * acting as an intermediary between the controller and repository layers.
+ * SoftwareEngineerエンティティを管理するサービスクラス
+ * ソフトウェアエンジニアのCRUD操作のビジネスロジックを提供し、
+ * コントローラーとリポジトリ層の間の仲介役を果たします
  */
 @Service
 public class SoftwareEngineerService {
@@ -18,7 +18,7 @@ public class SoftwareEngineerService {
     private final SoftwareEngineerMapper mapper;
 
     /**
-     * Constructor
+     * コンストラクタ
      */
     public SoftwareEngineerService (SoftwareEngineerMapper mapper)
     {

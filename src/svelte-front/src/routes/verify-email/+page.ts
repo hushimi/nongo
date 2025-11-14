@@ -33,7 +33,7 @@ export const load: PageLoad = async ({ url, fetch }) => {
       throw err;
     }
     // それ以外のエラー（ネットワークエラーなど）の場合はエラーページへリダイレクト
-    console.error('Verification error:', err);
+    console.error('認証エラー:', err);
     throw redirect(302, '/error?type=verification&message=' + encodeURIComponent('認証処理中にエラーが発生しました'));
   }
 };

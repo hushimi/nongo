@@ -13,17 +13,19 @@ currentFocus:
       - once verification email is sent, users verification column become true
 
   BACKEND:
-    - After sign up, send verification email
-      - If account token is not valid, redirect to error page
+    -
 
   FRONTEND:
-
+    -
 
   DATABASE:
-
+    -
 
   INTEGRATION:
-    - Generate mapper file
+    -
+
+  MAIL
+    -
 
 # --- Next Steps ---
 next:
@@ -94,4 +96,13 @@ completed:
     - regenerated OpenAPI client types (npm run gen-tscode)
     - updated signup page to use generated AuthenticationApi.signupRaw with handleApiPost
     - signup page now uses api.ts utility for consistent error handling
+
+  MAIL:
+    - Changed verification mail to professional HTML format
+      - Beautiful gradient header with nongo branding
+      - Prominent call-to-action button for account verification
+      - Fallback URL for users whose email clients don't support buttons
+      - Warning box highlighting 24-hour expiration
+      - Professional footer with copyright information
+      - Fully responsive design that works on all email clients
 ```

@@ -17,9 +17,9 @@ import bushigen.nongo.model.Users;
 import bushigen.nongo.model.UsersExample;
 
 /**
- * Service class for managing Users entities.
- * This service provides business logic for user operations,
- * acting as an intermediary between the controller and repository layers.
+ * ユーザーエンティティを管理するサービスクラス
+ * ユーザー操作のビジネスロジックを提供し、
+ * コントローラーとリポジトリ層の間の仲介役を果たします
  */
 @Service
 public class UsersService {
@@ -30,7 +30,7 @@ public class UsersService {
   private final EmailService emailService;
 
   /**
-   * Constructor
+   * コンストラクタ
    */
   public UsersService(
     UsersMapper usersMapper,

@@ -46,7 +46,7 @@
       },
       async () => {
         showSuccessMessage = true;
-        // Reset form
+        // フォームをリセット
         userName = '';
         email = '';
         password = '';
@@ -54,7 +54,7 @@
       },
       async err => {
         errors = err as Record<string, string>;
-        console.error('Signup error:', err);
+        console.error('サインアップエラー:', err);
       }
     );
 

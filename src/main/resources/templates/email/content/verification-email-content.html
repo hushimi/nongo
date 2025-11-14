@@ -1,0 +1,30 @@
+<h2 class="title">アカウント認証のお願い</h2>
+
+<p class="text">{{userName}} 様</p>
+
+<p class="text">この度は、nongoアプリケーションにご登録いただき、誠にありがとうございます。</p>
+
+<p class="text-last">アカウントを有効化するには、以下のボタンをクリックしてください。</p>
+
+<!-- Button -->
+<table role="presentation" class="button-wrapper">
+  <tr>
+    <td align="center" class="button-cell">
+      <a href="{{verificationUrl}}" class="button">アカウントを認証する</a>
+    </td>
+  </tr>
+</table>
+
+<p class="help-text">ボタンが動作しない場合は、以下のURLをコピーしてブラウザに貼り付けてください：</p>
+
+<p class="url-box">{{verificationUrl}}</p>
+
+<div class="warning-box">
+  <p class="warning-text">
+    <strong>⚠️ 重要：</strong><br>
+    このリンクは24時間のみ有効です。<br>
+    お早めに認証をお済ませください。
+  </p>
+</div>
+
+<p class="note-text">※ このメールに心当たりがない場合は、お手数ですが破棄していただけますようお願いいたします。</p>

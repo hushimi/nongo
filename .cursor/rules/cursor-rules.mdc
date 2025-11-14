@@ -20,6 +20,8 @@ for a monorepo containing a **Spring Boot backend** and **SvelteKit frontend**.
 - In **Svelte + TypeScript**, follow ESLint + Prettier conventions and use strict typing.
 - Document all public classes/methods with brief JavaDoc or KDoc-style comments.
 - When you write code, use 2 spaces to indent
+- Write comment in Japanese
+  - This rule applies to all the file you create(.java, .svelte, .sql etc)
 
 ---
 

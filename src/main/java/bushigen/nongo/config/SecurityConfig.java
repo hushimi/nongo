@@ -23,7 +23,7 @@ public class SecurityConfig {
   private final JwtUtil jwtUtil;
 
   /**
-   * Use the new AuthenticationManager bean instead of manually creating DaoAuthenticationProvider
+   * DaoAuthenticationProviderを手動で作成する代わりに新しいAuthenticationManager Beanを使用
    */
   @Bean
   AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

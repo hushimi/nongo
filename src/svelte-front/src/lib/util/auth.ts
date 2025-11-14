@@ -1,7 +1,7 @@
 /**
- * Authentication utility functions
- * Since JWT token is stored in HTTP-only cookie, we check authentication
- * by making a request to the is-token-valid endpoint
+ * 認証ユーティリティ関数
+ * JWTトークンはHTTP-only Cookieに保存されているため、
+ * is-token-validエンドポイントにリクエストを送信して認証を確認します
  */
 
 import { AuthenticationApi } from '$lib/types';
@@ -11,8 +11,8 @@ let isAuthenticatedCache: boolean | null = null;
 const api = new AuthenticationApi(apiConfig);
 
 /**
- * Check if user is authenticated using the is-token-valid API
- * Returns true if authenticated, false otherwise
+ * is-token-valid APIを使用してユーザーが認証されているかをチェック
+ * 認証されている場合はtrueを、そうでない場合はfalseを返します
  */
 export async function checkAuthentication(): Promise<boolean> {
   if (isAuthenticatedCache !== null) {
@@ -32,7 +32,7 @@ export async function checkAuthentication(): Promise<boolean> {
 }
 
 /**
- * Clear authentication cache (call after logout or login)
+ * 認証キャッシュをクリア（ログアウトまたはログイン後に呼び出し）
  */
 export function clearAuthCache(): void {
   isAuthenticatedCache = null;

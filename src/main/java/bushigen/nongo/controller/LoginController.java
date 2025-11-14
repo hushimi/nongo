@@ -22,8 +22,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
- * Controller class for managing user authentication and registration.
- * This controller handles user authentication and registration endpoints.
+ * ユーザー認証と登録を管理するコントローラークラス
+ * ユーザー認証と登録のエンドポイントを処理します
  */
 @Slf4j
 @RestController

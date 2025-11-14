@@ -3,10 +3,10 @@ package bushigen.nongo.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record LoginRequest(
-    @Schema(description = "Login user name")
+    @Schema(description = "ログインユーザー名")
     String userName,
 
-    @Schema(description = "Login password")
+    @Schema(description = "ログインパスワード")
     String password
 ) {
 }

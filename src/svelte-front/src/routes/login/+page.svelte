@@ -12,10 +12,10 @@
   let errors = $state<Record<string, string>>({});
   let isLoading = $state(false);
 
-  // Get data from load function
+  // load関数からデータを取得
   let { data }: { data: { verified: boolean } } = $props();
 
-  // Check if all fields are filled
+  // すべてのフィールドが入力されているかチェック
   let isFormValid = $derived(userName.trim() !== '' && password.trim() !== '');
 
   async function handleSubmit(event: Event) {

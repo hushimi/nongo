@@ -28,7 +28,7 @@ public class SoftwareEngineerController {
     private final SoftwareEngineerObjMapper entityMapper;
 
     /**
-     * Constructor
+     * コンストラクタ
      */
     public SoftwareEngineerController(SoftwareEngineerService service, SoftwareEngineerObjMapper entityMapper) {
         this.service = service;

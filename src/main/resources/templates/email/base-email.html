@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    .wrapper {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #f5f5f5;
+    }
+
+    .wrapper-cell {
+      padding: 40px 0;
+    }
+
+    .container {
+      width: 600px;
+      max-width: 600px;
+      border-collapse: collapse;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      padding: 40px 40px 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 8px 8px 0 0;
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 28px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .body {
+      padding: 40px;
+    }
+
+    .title {
+      margin: 0 0 20px;
+      color: #333333;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .text {
+      margin: 0 0 20px;
+      color: #666666;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .text-last {
+      margin: 0 0 30px;
+      color: #666666;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .button-wrapper {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .button-cell {
+      padding: 20px 0;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 16px 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+    }
+
+    .help-text {
+      margin: 30px 0 20px;
+      color: #999999;
+      font-size: 14px;
+      line-height: 1.6;
+      border-top: 1px solid #eeeeee;
+      padding-top: 20px;
+    }
+
+    .url-box {
+      margin: 0 0 30px;
+      color: #667eea;
+      font-size: 14px;
+      word-break: break-all;
+      background-color: #f8f9fa;
+      padding: 12px;
+      border-radius: 4px;
+      border-left: 3px solid #667eea;
+    }
+
+    .info-box {
+      background-color: #d1ecf1;
+      border-left: 4px solid #0c5460;
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .info-text {
+      margin: 0;
+      color: #0c5460;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .warning-box {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .warning-text {
+      margin: 0;
+      color: #856404;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .success-box {
+      background-color: #d4edda;
+      border-left: 4px solid #28a745;
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .success-text {
+      margin: 0;
+      color: #155724;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .note-text {
+      margin: 20px 0 0;
+      color: #999999;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .footer {
+      padding: 30px 40px;
+      background-color: #f8f9fa;
+      border-radius: 0 0 8px 8px;
+      border-top: 1px solid #eeeeee;
+    }
+
+    .footer-text {
+      margin: 0 0 10px;
+      color: #666666;
+      font-size: 14px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .copyright {
+      margin: 0;
+      color: #999999;
+      font-size: 12px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <table role="presentation" class="wrapper">
+    <tr>
+      <td align="center" class="wrapper-cell">
+        <table role="presentation" class="container">
+          <!-- Header -->
+          <tr>
+            <td class="header">
+              <h1>nongo</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td class="body">
+              {{content}}
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td class="footer">
+              <p class="footer-text">今後ともnongoをよろしくお願いいたします。</p>
+              <p class="copyright">© 2025 nongo. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>

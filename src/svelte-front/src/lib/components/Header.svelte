@@ -33,8 +33,8 @@
         isAuthenticated = false;
         goto('/');
       },
-      async (err) => {
-        console.error('Logout error:', err);
+      async err => {
+        console.error('ログアウトエラー:', err);
       }
     );
   }
@@ -48,17 +48,11 @@
     {#if isLoading}
       <span class="loading loading-spinner loading-sm"></span>
     {:else if isAuthenticated}
-      <button class="btn btn-outline btn-error" onclick={handleLogout}>
-        Logout
-      </button>
+      <button class="btn btn-outline btn-error" onclick={handleLogout}>Logout</button>
     {:else}
       <div class="flex gap-2">
-        <a href="/signup" class="btn btn-primary">
-          Sign Up
-        </a>
-        <a href="/login" class="btn btn-outline btn-primary">
-          Log In
-        </a>
+        <a href="/signup" class="btn btn-primary">Sign Up</a>
+        <a href="/login" class="btn btn-outline btn-primary">Log In</a>
       </div>
     {/if}
   </div>
