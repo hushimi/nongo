@@ -6,23 +6,47 @@ alwaysApply: false
 ```plan
 # --- Current Focus ---
 currentFocus:
-  - Implement account verification function
-      - user sign up and create account
-      - send verification email
-      - user clicks the link inside verification email
-      - once verification email is sent, users verification column become true
-
-  BACKEND:
-    -
-
-  FRONTEND:
-    -
+  - Implement password reset function
+    1. User request password reset
+    2. User input own email
+      - if email is not existed on server, show error message
+    3. Password reset email will be sent
+      - create one token per user
+      - if user request multiple reset token, update existed record
+    4. User clicks link with password reset token
+    5. User will reset password
 
   DATABASE:
-    -
+  - create password_reset_tokens table
+    - id(PK), user_id(FK), token, expires_at, is_active, created_at, updated_at
+    - If you have any suggestions for table column tell me
+  - Generate mybatis code(.\gradlew mybatisGenerate)
+
+  BACKEND:
+    - Send password reset function
+      - make sure email is existed in database
+        - if not return error message that frontend can handle it
+      - If email is existed in database, send reset url with token
+    - Reset password function
+      - validate password and confirm password is same
+      - validate password format same as signup
+      - validate token is existed in database
+      - if token is valid reset password
+        - redirect user to login page
+    - Generate type script api code
+
+  FRONTEND:
+    - create request password reset page
+      - can show backend error
+      - layout should be look professional
+      - use component as possible as you can
+    - create password reset page
+      - can show validation error
+      - layout should be look professional
+      - use component as possible as you can
 
   INTEGRATION:
-    -
+    - Generate mybatis and typescript code
 
   MAIL
     -

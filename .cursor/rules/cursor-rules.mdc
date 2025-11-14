@@ -48,6 +48,9 @@ for a monorepo containing a **Spring Boot backend** and **SvelteKit frontend**.
 - Build command: `npm run build` → outputs to `src/main/resources/static`.
 - Use **OpenAPI-generated clients** for API calls (in `src/lib/types`), never hardcoded URLs.
 - Use component as possible as you can.
+- Use tailwind css and DaisyUI as possible as you can
+- Design professionaly
+- Always consider responsive design
 - After backend OpenAPI changes, run:
 ```bash
 npm run gen-tscode

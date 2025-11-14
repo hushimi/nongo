@@ -1,50 +1,51 @@
-# Architecture Overview
+# アーキテクチャ概要
 
-## Backend
-- Framework: Spring Boot 3.x
-- Layered structure:
+## バックエンド
+- フレームワーク: Spring Boot 3.x
+- レイヤー構造:
   - Controller (REST API)
-  - Service (business logic)
+  - Service (ビジネスロジック)
   - Repository (MyBatis + Dynamic SQL)
-  - Entity (domain model)
+  - Entity (ドメインモデル)
 
-### BackEndTools
-- Gradle: build & dependency management
-- Flyway: schema migration
-- MyBatis Generator: code generation
-- MapStruct: DTO mapping
-- SpringDoc: OpenAPI auto-generation
-- OpenAPI Generator: TypeScript client
+### バックエンドツール
+- Gradle: ビルド & 依存関係管理
+- Flyway: スキーママイグレーション
+- MyBatis Generator: コード生成
+- MapStruct: DTOマッピング
+- SpringDoc: OpenAPI自動生成
+- OpenAPI Generator: TypeScriptクライアント生成
 
-### JWT Authentication
-- Implemented with com.auth0:java-jwt.
-- Tokens validated via OncePerRequestFilter
-- Secrets stored in application.yml
+### JWT認証
+- com.auth0:java-jwtで実装
+- OncePerRequestFilterでトークンを検証
+- シークレットはapplication.ymlに保存
 
 ---
 
-## Frontend
+## フロントエンド
 - SvelteKit + TypeScript + TailwindCSS
-- Uses OpenAPI-generated TypeScript clients
-- Built into `/static` for backend serving
+- OpenAPI生成のTypeScriptクライアントを使用
+- `/static` にビルドしてバックエンドから配信
 
-## Frontend Stack
-- Framework: SvelteKit 2
-- Styling: TailwindCSS + Daisy UI
-- API client: Generated from Open API
-- Icons: FontAwesome via svelte-fa
-To generate TypeScript API clients:
+## フロントエンドスタック
+- フレームワーク: SvelteKit 2
+- スタイリング: TailwindCSS + Daisy UI
+- APIクライアント: OpenAPIから生成
+- アイコン: FontAwesome (svelte-fa経由)
+
+TypeScript APIクライアントの生成:
 ```bash
 npm run gen-tscode
 ```
 
 ---
 
-## Communication
-- REST API via JSON
-- Auth via JWT Bearer tokens
+## 通信
+- REST API（JSON形式）
+- JWT Bearerトークンによる認証
 
-## Folder Layout
+## フォルダ構成
 ```text
 project-root/
 ├── .cursor/
@@ -54,8 +55,8 @@ project-root/
 │   ├── main/
 │   │   ├── java/
 │   │   ├── resources/
-│   │   │   ├── static/        ← built Svelte app
-│   │   │   └── db/migration/  ← Flyway scripts
+│   │   │   ├── static/        ← ビルド済みSvelteアプリ
+│   │   │   └── db/migration/  ← Flywayスクリプト
 │   └── svelte-front/
 │       ├── src/
 │       ├── package.json

@@ -1,38 +1,38 @@
-# sv
+# SvelteKit フロントエンド
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Svelteプロジェクトのビルドに必要なすべてが揃っています。[`sv`](https://github.com/sveltejs/cli)で構築されています。
 
-## Creating a project
+## プロジェクトの作成
 
-If you're seeing this, you've probably already done this step. Congrats!
+これを見ているということは、おそらくこのステップは完了していますね。おめでとうございます！
 
 ```sh
-# create a new project in the current directory
+# 現在のディレクトリに新しいプロジェクトを作成
 npx sv create
 
-# create a new project in my-app
+# my-appディレクトリに新しいプロジェクトを作成
 npx sv create my-app
 ```
 
-## Developing
+## 開発
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+プロジェクトを作成し、`npm install`（または `pnpm install`、`yarn`）で依存関係をインストールしたら、開発サーバーを起動します：
 
 ```sh
 npm run dev
 
-# or start the server and open the app in a new browser tab
+# または、サーバーを起動して新しいブラウザタブでアプリを開く
 npm run dev -- --open
 ```
 
-## Building
+## ビルド
 
-To create a production version of your app:
+アプリの本番バージョンを作成するには：
 
 ```sh
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+本番ビルドのプレビューは `npm run preview` で確認できます。
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+> アプリをデプロイするには、ターゲット環境用の[アダプター](https://svelte.dev/docs/kit/adapters)をインストールする必要がある場合があります。
