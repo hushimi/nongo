@@ -31,6 +31,8 @@ public class AuthorizeFilter extends OncePerRequestFilter{
     "/logout",
     "/is-token-valid",
     "/verify-email",
+    "/request-password-reset",
+    "/reset-password",
     "/api-docs*/**",
     "/swagger-ui/**"
   };

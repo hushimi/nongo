@@ -13,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import bushigen.nongo.dto.request.LoginRequest;
+import bushigen.nongo.dto.request.PasswordResetRequest;
+import bushigen.nongo.dto.request.ResetPasswordRequest;
 import bushigen.nongo.dto.request.SignupRequest;
 import bushigen.nongo.global.BusinessException;
 import bushigen.nongo.model.Users;
@@ -178,5 +180,48 @@ public class LoginController {
     response.addCookie(cookie);
 
     return ResponseEntity.ok().body("Logout successful");
+  }
+
+  /**
+   * パスワードリセットリクエストAPI
+   * メールアドレスにパスワードリセットリンクを送信
+   */
+  @Operation(summary = "Request password reset", description = "Send password reset email to user")
+  @PostMapping("/request-password-reset")
+  public ResponseEntity<?> requestPasswordReset(
+      @Valid @RequestBody PasswordResetRequest request
+  ) {
+    try {
+      usersService.requestPasswordReset(request.email());
+      return ResponseEntity.ok().body("パスワードリセットメールを送信しました");
+    } catch (BusinessException e) {
+      // メールアドレスが見つからない場合
+      return ResponseEntity.status(400).body(e.getMessage());
+    } catch (Exception e) {
+      log.error("Password reset request error", e);
+      return ResponseEntity.status(500).body("パスワードリセットリクエスト処理中にエラーが発生しました");
+    }
+  }
+
+  /**
+   * パスワードリセットAPI
+   * トークンを使用してパスワードをリセット
+   */
+  @Operation(summary = "Reset password", description = "Reset user password using reset token")
+  @PostMapping("/reset-password")
+  public ResponseEntity<?> resetPassword(
+      @Valid @RequestBody ResetPasswordRequest request
+  ) {
+    try {
+      // パスワードをリセット
+      usersService.resetPassword(request.token(), request.password());
+      return ResponseEntity.ok().body("パスワードが正常にリセットされました");
+    } catch (BusinessException e) {
+      // トークンが無効、期限切れ、またはその他のビジネスロジックエラー
+      return ResponseEntity.status(400).body(e.getMessage());
+    } catch (Exception e) {
+      log.error("Password reset error", e);
+      return ResponseEntity.status(500).body("パスワードリセット処理中にエラーが発生しました");
+    }
   }
 }

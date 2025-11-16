@@ -18,25 +18,7 @@ currentFocus:
 
   DATABASE:
 
-  - create password_reset_tokens table(create migration file)
-    - id(PK), user_id(FK), token, expires_at, is_active, created_at, updated_at
-    - If you have any suggestions for table column tell me
-  - execute flyway migration command
-
-  - Generate mybatis code(.\gradlew mybatisGenerate)
-
   BACKEND:
-    - Send password reset function
-      - make sure email is existed in database
-        - if not return error message that frontend can handle it
-      - If email is existed in database, send reset url with token
-    - Reset password function
-      - validate password and confirm password is same
-      - validate password format same as signup
-      - validate token is existed in database
-      - if token is valid reset password
-        - redirect user to login page
-    - Generate type script api code
 
   FRONTEND:
     - create request password reset page
@@ -90,6 +72,22 @@ completed:
       - use mailhog for admin environment(use gmail for production environment)
       - mail sentence can be modified via template block
       - Until account is verified, user can not login
+    - Create endpoint for receiving password reset request
+      - request body
+        - email
+      - make sure email exists in users table
+        - if not, return error message that frontend can handle it
+      - If email exists in users table, send reset url with token
+
+    - Reset password endpoint
+      - request body
+        - password
+        - confirmation password
+      - validate password and confirmation password is same
+      - validate password format same as signup request
+      - validate token is existed in database
+      - if token is valid reset password
+        - redirect user to login page
 
   FRONTEND:
     - create signup page using tailwind and daisyUI
@@ -118,6 +116,9 @@ completed:
       - Create an Email verification token table
         - 1 user > 1 active token
         - token cleanup if user is deleted
+    - create password_reset_tokens table(create migration file)
+    - id(PK), user_id(FK), token, expires_at, is_active, created_at, updated_at
+    - If you have any suggestions for table column tell me
 
   INTEGRATION:
     - regenerated OpenAPI client types (npm run gen-tscode)

@@ -39,6 +39,12 @@ for a monorepo containing a **Spring Boot backend** and **SvelteKit frontend**.
 - Throw **custom exceptions** (like `BusinessException`) instead of returning `null`.
 - Use **Spring AOP** for cross-cutting concerns (logging, transactions, etc.).
 
+### Flyway(Database Migration)
+> Applies when adding `src\main\resources\db\migration` files.
+
+- After add migration file, do following
+  - update `src\main\resources\generatorConfig.xml`
+
 ---
 
 ## 🎨 Frontend (SvelteKit)

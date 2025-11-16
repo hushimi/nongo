@@ -59,6 +59,36 @@ public class EmailService {
   }
 
   /**
+   * ユーザーにパスワードリセットメールを送信する
+   * @param email ユーザーのメールアドレス
+   * @param userName ユーザー名
+   * @param token パスワードリセットトークン
+   */
+  public void sendPasswordResetEmail(String email, String userName, String token) {
+    try {
+      String resetUrl = baseUrl + "/reset-password?token=" + token;
+
+      MimeMessage mimeMessage = mailSender.createMimeMessage();
+      MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+      if (email != null) {
+        helper.setTo(email);
+      }
+      helper.setSubject("【nongo】パスワードリセット");
+      String htmlContent = buildPasswordResetEmailHtml(userName, resetUrl);
+      if (htmlContent != null) {
+        helper.setText(htmlContent, true);
+      }
+
+      mailSender.send(mimeMessage);
+      log.info("Password reset email sent to: {}", email);
+    } catch (MessagingException e) {
+      log.error("Failed to send password reset email to: {}", email, e);
+      throw new RuntimeException("メール送信に失敗しました", e);
+    }
+  }
+
+  /**
    * 認証メールのHTML本文を構築する
    * @param userName ユーザー名
    * @param verificationUrl 認証URL
@@ -72,6 +102,24 @@ public class EmailService {
     return composeEmail(
       "templates/email/content/verification-email-content.html",
       "アカウント認証",
+      replacements
+    );
+  }
+
+  /**
+   * パスワードリセットメールのHTML本文を構築する
+   * @param userName ユーザー名
+   * @param resetUrl パスワードリセットURL
+   * @return HTMLメール本文
+   */
+  private String buildPasswordResetEmailHtml(String userName, String resetUrl) {
+    Map<String, String> replacements = new HashMap<>();
+    replacements.put("userName", userName);
+    replacements.put("resetUrl", resetUrl);
+
+    return composeEmail(
+      "templates/email/content/password-reset-email-content.html",
+      "パスワードリセット",
       replacements
     );
   }

@@ -9,10 +9,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import bushigen.nongo.dao.generated.EmailVerificationTokensMapper;
+import bushigen.nongo.dao.generated.PasswordResetTokensMapper;
 import bushigen.nongo.dao.generated.UsersMapper;
 import bushigen.nongo.global.BusinessException;
 import bushigen.nongo.model.EmailVerificationTokens;
 import bushigen.nongo.model.EmailVerificationTokensExample;
+import bushigen.nongo.model.PasswordResetTokens;
+import bushigen.nongo.model.PasswordResetTokensExample;
 import bushigen.nongo.model.Users;
 import bushigen.nongo.model.UsersExample;
 
@@ -27,6 +30,7 @@ public class UsersService {
   private final UsersMapper usersMapper;
   private final PasswordEncoder passwordEncoder;
   private final EmailVerificationTokensMapper emailVerificationTokensMapper;
+  private final PasswordResetTokensMapper passwordResetTokensMapper;
   private final EmailService emailService;
 
   /**
@@ -36,11 +40,13 @@ public class UsersService {
     UsersMapper usersMapper,
     PasswordEncoder passwordEncoder,
     EmailVerificationTokensMapper emailVerificationTokensMapper,
+    PasswordResetTokensMapper passwordResetTokensMapper,
     EmailService emailService
   ) {
     this.usersMapper = usersMapper;
     this.passwordEncoder = passwordEncoder;
     this.emailVerificationTokensMapper = emailVerificationTokensMapper;
+    this.passwordResetTokensMapper = passwordResetTokensMapper;
     this.emailService = emailService;
   }
 
@@ -156,5 +162,108 @@ public class UsersService {
       throw new BusinessException("ユーザーが見つかりません");
     }
     return users.get(0);
+  }
+
+  /**
+   * メールアドレスでユーザーを取得
+   * @param email メールアドレス
+   * @return Users ユーザー情報
+   * @throws BusinessException ユーザーが見つからない場合
+   */
+  public Users getUserByEmail(String email) {
+    UsersExample example = new UsersExample();
+    example.createCriteria().andEmailEqualTo(email);
+    List<Users> users = usersMapper.selectByExample(example);
+    if (users.isEmpty()) {
+      throw new BusinessException("メールアドレスが見つかりません");
+    }
+    return users.getFirst();
+  }
+
+  /**
+   * パスワードリセットリクエストを処理
+   * メールアドレスが存在する場合、パスワードリセットトークンを生成してメールを送信
+   * @param email メールアドレス
+   * @throws BusinessException メールアドレスが見つからない場合
+   */
+  @Transactional
+  public void requestPasswordReset(String email) {
+    // メールアドレスでユーザーを検索
+    UsersExample example = new UsersExample();
+    example.createCriteria().andEmailEqualTo(email);
+    List<Users> users = usersMapper.selectByExample(example);
+    if (users.isEmpty()) {
+      throw new BusinessException("メールアドレスが見つかりません");
+    }
+
+    Users user = users.getFirst();
+
+    // パスワードリセットトークン作成(1時間有効)
+    String token = UUID.randomUUID().toString();
+    Date expiresAt = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
+
+    // 既存のアクティブなリセットトークンレコードを無効化（1ユーザー1アクティブトークンの制約）
+    PasswordResetTokensExample tokenExample = new PasswordResetTokensExample();
+    tokenExample.createCriteria()
+      .andUserIdEqualTo(user.getId())
+      .andIsActiveEqualTo(true);
+    List<PasswordResetTokens> existingTokens = passwordResetTokensMapper.selectByExample(tokenExample);
+    for (PasswordResetTokens existingToken : existingTokens) {
+      existingToken.setIsActive(false);
+      passwordResetTokensMapper.updateByPrimaryKeySelective(existingToken);
+    }
+
+    // 新しいリセットトークンレコードを作成
+    PasswordResetTokens resetToken = new PasswordResetTokens();
+    resetToken.setUserId(user.getId());
+    resetToken.setToken(token);
+    resetToken.setExpiresAt(expiresAt);
+    resetToken.setIsActive(true);
+    passwordResetTokensMapper.insertSelective(resetToken);
+
+    // パスワードリセットメール送信
+    emailService.sendPasswordResetEmail(email, user.getUserName(), token);
+  }
+
+  /**
+   * パスワードリセットトークンでパスワードをリセット
+   * @param token リセットトークン
+   * @param newPassword 新しいパスワード
+   * @throws BusinessException トークンが無効、期限切れ、またはパスワードが一致しない場合
+   */
+  @Transactional
+  public void resetPassword(String token, String newPassword) {
+    // トークンを検索
+    PasswordResetTokensExample tokenExample = new PasswordResetTokensExample();
+    tokenExample.createCriteria()
+      .andTokenEqualTo(token)
+      .andIsActiveEqualTo(true);
+    List<PasswordResetTokens> tokens = passwordResetTokensMapper.selectByExample(tokenExample);
+
+    if (tokens.isEmpty()) {
+      throw new BusinessException("パスワードリセットトークンが無効です");
+    }
+
+    PasswordResetTokens resetToken = tokens.getFirst();
+
+    // トークンの有効期限をチェック
+    Date now = new Date();
+    if (resetToken.getExpiresAt().before(now)) {
+      throw new BusinessException("パスワードリセットトークンの有効期限が切れています");
+    }
+
+    // ユーザーを取得
+    Users user = usersMapper.selectByPrimaryKey(resetToken.getUserId());
+    if (user == null) {
+      throw new BusinessException("ユーザーが見つかりません");
+    }
+
+    // パスワードを更新
+    user.setPassword(passwordEncoder.encode(newPassword));
+    usersMapper.updateByPrimaryKeySelective(user);
+
+    // トークンを無効化
+    resetToken.setIsActive(false);
+    passwordResetTokensMapper.updateByPrimaryKeySelective(resetToken);
   }
 }
