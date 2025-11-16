@@ -36,5 +36,8 @@
     <table tableName="email_verification_tokens" domainObjectName="EmailVerificationTokens">
       <generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
     </table>
+    <table tableName="password_reset_tokens" domainObjectName="PasswordResetTokens">
+      <generatedKey column="id" sqlStatement="MYSQL" identity="true"/>
+    </table>
   </context>
 </generatorConfiguration>

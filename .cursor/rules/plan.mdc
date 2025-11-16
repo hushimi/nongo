@@ -17,9 +17,12 @@ currentFocus:
     5. User will reset password
 
   DATABASE:
-  - create password_reset_tokens table
+
+  - create password_reset_tokens table(create migration file)
     - id(PK), user_id(FK), token, expires_at, is_active, created_at, updated_at
     - If you have any suggestions for table column tell me
+  - execute flyway migration command
+
   - Generate mybatis code(.\gradlew mybatisGenerate)
 
   BACKEND:
